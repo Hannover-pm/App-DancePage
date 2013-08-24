@@ -1,0 +1,121 @@
+# Your site's name.
+sitename: My DancePage
+
+# Application's name.
+appname: App::DancePage
+
+# The IP address that the Dancer app should bind to.
+server: 0.0.0.0
+
+# The port Dancer will listen to.
+port: 3000
+
+# If set to true, runs the standalone webserver in the background.
+daemon: 0
+
+# If set to true, Dancer will look to X-Forwarded-Protocol and
+# X-Forwarded-Host when constructing URLs.
+behind_proxy: 0
+
+# The default content type of outgoing content.
+content_type: text/html
+
+# Sets the default charset of outgoing content.
+charset: UTF-8
+
+# Sets the default language of outgoing content.
+language: en
+
+# Sets the default charset of files with unknown extensions within the
+# public folder.
+default_mime_type: application/data
+
+# Which template engine should be used.
+template: xslate
+
+# The name of the layout to use when rendering view.
+layout: main
+
+# If true, config will return an object instead of a hash reference.
+strict_config: 0
+
+# If true, use warnings will be in effect for all modules and scripts loaded
+# by your Dancer application.
+global_warnings: 1
+
+# If set to true, prints a banner at the server start with information such
+# as versions and the environment.
+startup_info: 1
+
+# If set to true, tells Dancer to consider all warnings as blocking errors.
+warnings: 0
+
+# If set to true, Dancer will render a detailed debug screen whenever an
+# error is caught.
+show_errors: 0
+
+# If set to true, Dancer will display full stack traces when a warning or a
+# die occurs.
+traces: 0
+
+# If set to true, Dancer will add an "X-Powered-By" header and also append
+# the Dancer version to the "Server" header.
+server_tokens: 1
+
+# This setting lets you specify a template to be used in case of runtime
+# error.
+#error_template: error
+
+# If set to true, Dancer will reload the route handlers whenever the file
+# where they are defined is changed.
+auto_reload: 0
+
+# Which session engine should be used.
+session: YAML
+
+# The session expiry time in seconds, or as e.g. "2 hours".
+session_expires: 2 hours
+
+# The name of the cookie to store the session ID in.
+session_name: sid
+
+# If the session_secure setting is set to a true value, the cookie will be
+# marked as secure, meaning it should only be sent over HTTPS connections.
+session_secure: 0
+
+# This setting defaults to 1 and instructs the session cookie to be created
+# with the HttpOnly option active, meaning that JavaScript will not be able
+# to access to its value.
+session_is_http_only: 0
+
+# Allows you to set the domain property on the cookie, which will override
+# the default.
+#session_domain: .example.com
+
+# For simple pages where you're not doing anything dynamic, but still want
+# to use the template engine to provide headers etc, you can use the
+# auto_page feature to avoid the need to create a route for each page.
+auto_page: 0
+
+# Enables route caching.
+route_cache: 1
+
+# Maximum size of route cache in bytes.
+route_cache_size_limit: 31457280
+
+# Maximum number of routes to cache.
+route_cache_path_limit: 100
+
+# Configure template engines.
+engines:
+  xslate:
+    cache: 1
+    cache_dir: views/cache
+    input_layer: ':utf8'
+    verbose: 0
+    extension: tx
+    syntax: Kolon
+    type: html
+    line_start: '|%'
+    tag_start: '<%'
+    tag_end: '%>'

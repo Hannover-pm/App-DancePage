@@ -1,0 +1,42 @@
+# configuration file for development environment
+
+# If set to true, runs the standalone webserver in the background.
+daemon: 0
+
+# If set to true, Dancer will look to X-Forwarded-Protocol and
+# X-Forwarded-Host when constructing URLs.
+behind_proxy: 0
+
+# the logger engine to use
+logger: console
+
+# the log level for this environment
+# core is the lowest, it shows Dancer's core log messages as well as yours
+# (debug, info, warning and error)
+log: core
+
+# If true, use warnings will be in effect for all modules and scripts loaded
+# by your Dancer application.
+global_warnings: 1
+
+# If set to true, prints a banner at the server start with information such
+# as versions and the environment.
+startup_info: 1
+
+# If set to true, tells Dancer to consider all warnings as blocking errors.
+warnings: 1
+
+# If set to true, Dancer will render a detailed debug screen whenever an
+# error is caught.
+show_errors: 1
+
+# If set to true, Dancer will display full stack traces when a warning or a
+# die occurs.
+traces: 1
+
+# If set to true, Dancer will add an "X-Powered-By" header and also append
+# the Dancer version to the "Server" header.
+server_tokens: 1
+
+# Which session engine should be used.
+session: Simple

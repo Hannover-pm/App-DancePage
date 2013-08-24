@@ -1,0 +1,8 @@
+      <h2 id="pagetitle"><% $pagetitle %></h2>
+      <p>The page you requested does not exist!</p>
+      <p>Here are some information about the error:</p>
+      <pre>Error code: 404
+Event timestamp: <% $now.strftime('%Y-%m-%dT%H:%M:%S%z') %>
+Request URI base: <% $request.uri_base %>
+Request signature: <% $request.method %> <% $request.uri %>
+<% $settings.appname %> version <% $appversion %></pre>

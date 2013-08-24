@@ -1,0 +1,2 @@
+      <h2 id="pagetitle">Welcome to <% if $settings.sitename { $settings.sitename } else { $settings.appname } %></h2>
+      <p>You will find my content here shortly!</p>

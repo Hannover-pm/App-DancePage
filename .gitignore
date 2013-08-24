@@ -1,0 +1,7 @@
+.*
+*.ERR
+tmp*.html
+/App-DancePage-*
+/logs
+/sessions
+/views/cache

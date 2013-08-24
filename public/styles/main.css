@@ -1,0 +1,38 @@
+/*! App::DancePage v0.001 | (c) 2013 BURNERSK | p3rl.org/App::DancePage */
+html {
+  font-family: sans-serif;
+  font-size: 11pt;
+  line-height: 1.4em;
+}
+body {
+  width: 900px;
+  margin: 1em auto;
+  border: thin solid black;
+}
+#header {
+  height: 120px;
+  background: lightgray;
+  border-bottom: thin solid black;
+}
+#sitename {
+  margin-top: 0;
+  padding-top: 1em;
+  padding-left: 11pt;
+}
+#sitename a {
+  color: inherit;
+  text-decoration: inherit;
+}
+#main {
+  padding: 11pt;
+}
+#footer {
+  padding: 1em 11pt;
+  font-size: .8em;
+  color: gray;
+  border-top: thin solid black;
+}
+#footer a:link,
+#footer a:visited {
+  color: inherit;
+}

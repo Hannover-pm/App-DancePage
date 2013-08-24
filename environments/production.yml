@@ -1,0 +1,19 @@
+# configuration file for production environment
+
+# The IP address that the Dancer app should bind to.
+server: 127.0.0.1
+
+# The port Dancer will listen to.
+port: 5000
+
+# If set to true, Dancer will look to X-Forwarded-Protocol and
+# X-Forwarded-Host when constructing URLs.
+behind_proxy: 1
+
+# the logger engine to use
+logger: file
+
+# the log level for this environment
+# core is the lowest, it shows Dancer's core log messages as well as yours
+# (debug, info, warning and error)
+log: warning
