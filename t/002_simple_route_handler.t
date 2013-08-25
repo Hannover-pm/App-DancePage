@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use utf8;
 
 # Import Unit Test modules.
-use Test::More tests => 1 + 6;
+use Test::More tests => 1 + 13;
 use Test::NoWarnings;
 
 # Import other modules.
@@ -15,10 +15,14 @@ use Data::Dumper ('Dumper');
 # Define lexical constants.
 use Const::Fast ('const');
 const my $HTTP_STATUS_OK        => 200;
+const my $HTTP_STATUS_FOUND     => 302;
+const my $HTTP_STATUS_FORBIDDEN => 403;
 const my $HTTP_STATUS_NOT_FOUND => 404;
 const my $SIMPLE_ROUTE_METHODS  => [qw( GET POST )];
 const my $SIMPLE_GET_ROUTES     => [qw( / )];
 const my $NONEXISTENT_ROUTE     => '/nonexistent';
+const my $DEFAULT_USER          => 'root';
+const my $DEFAULT_USER_PASSWORD => '!';
 
 ############################################################################
 # Check simple GET route handlers for existence and returning HTTP status
@@ -33,6 +37,46 @@ foreach my $path ( @{$SIMPLE_GET_ROUTES} ) {
     $HTTP_STATUS_OK,
     qq{route handler HTTP status $HTTP_STATUS_OK: GET $path},
   ) or diag Dumper [read_logs];
+}
+
+############################################################################
+# Check authentification route handlers.
+{
+  route_exists(
+    [ GET => q{/login} ],
+    qq{route handler exists: GET /login},
+  ) or diag Dumper [read_logs];
+  response_status_is(
+    [ GET => q{/login} ],
+    $HTTP_STATUS_OK,
+    qq{route handler HTTP status $HTTP_STATUS_OK: GET /login},
+  ) or diag Dumper [read_logs];
+
+  route_exists(
+    [ POST => q{/login} ],
+    qq{route handler exists: POST /login},
+  ) or diag Dumper [read_logs];
+
+  route_exists(
+    [ GET => q{/logout} ],
+    qq{route handler exists: GET /logout},
+  ) or diag Dumper [read_logs];
+  response_status_is(
+    [ GET => q{/logout} ],
+    $HTTP_STATUS_FOUND,
+    qq{route handler HTTP status $HTTP_STATUS_FOUND: GET /logout},
+  ) or diag Dumper [read_logs];
+
+  route_exists(
+    [ GET => q{/access-denied} ],
+    qq{route handler exists: GET /access-denied},
+  ) or diag Dumper [read_logs];
+  response_status_is(
+    [ GET => q{/access-denied} ],
+    $HTTP_STATUS_FORBIDDEN,
+    qq{route handler HTTP status $HTTP_STATUS_FORBIDDEN: GET /access-denied},
+  ) or diag Dumper [read_logs];
+
 }
 
 ############################################################################
