@@ -317,11 +317,6 @@ sub get_logout_route {
 get q{/logout} => \&get_logout_route;
 
 ############################################################################
-get q{/require-login} => require_login sub { 'require login' };
-get q{/require-admin} => require_role admin => sub { 'require admin' };
-get q{/require-not}   => require_role not   => sub { 'require not' };
-
-############################################################################
 # *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER ***
 # Not Found route handler.
 sub not_found_route {
