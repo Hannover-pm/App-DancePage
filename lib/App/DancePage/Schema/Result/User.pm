@@ -72,11 +72,9 @@ sub sqlt_deploy_hook {
 
 ############################################################################
 # Relationship definitions:
-has_many userroles => 'App::DancePage::Schema::Result::UserRole', {
-  'foreign.user_id' => 'self.user_id',
-  },
+has_many userroles => 'App::DancePage::Schema::Result::UserRole', 'user_id',
   { cascade_copy => 0, cascade_delete => 0 };
-many_to_many roles => 'userroles', 'userroles', { cascade_copy => 0, cascade_delete => 0 };
+many_to_many roles => 'userroles', 'role', { cascade_copy => 0, cascade_delete => 0 };
 
 has_many pages => 'App::DancePage::Schema::Result::Page', {
   'foreign.author_id' => 'self.user_id',

@@ -1,0 +1,15 @@
+      <h2 id="pagetitle"><% $pagetitle %></h2>
+|% if $login_failed {
+      <p>Login failed <% $login_failed %> times.</p>
+|% }
+      <form action="/login" method="post" id="login_form">
+|% if $return_url {
+        <input type="hidden" name="return_url" value="<% $return_url %>">
+|% }
+        <p>
+          <input type="text" id="login_username" name="username" placeholder="Your username or email" required autocomplete="off" autofocus>
+          <input type="password" id="login_password" name="password" placeholder="Your password" required autocomplete="off">
+          <input type="submit" id="login_submit" value="Login">
+          <input type="reset" id="login_reset" value="Reset">
+        </p>
+      </form>

@@ -145,14 +145,17 @@ plugins:
         sqlite_allow_multiple_statements: 1
         sqlite_unicode: 1
   Auth::Extensible:
-    no_default_pages: 0
+    no_default_pages: 1
     disable_roles: 0
+    login_page: /login
+    logout_page: /logout
+    denied_page: /access-denied
     realms:
       users:
         provider: DBIC
         db_connection_name: default
         users_resultset: User
+        username_column: username
         roles_relationship: roles
         role_column: role
-        username_column: username
         password_check: check_password

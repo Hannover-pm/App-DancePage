@@ -68,10 +68,13 @@ use DateTime;
 
 # Define lexical constants.
 use Const::Fast ('const');
-const my $HTTP_STATUS_NOT_FOUND => 404;
-const my $SECURITY_CSRF         => 'csrf';
-const my $SECURITY_SESSION_UA   => '_security_ua';
-const my $SECURITY_SESSION_IP   => '_security_ip';
+const my $HTTP_STATUS_NOT_FOUND       => 404;
+const my $HTTP_STATUS_FORBIDDEN       => 403;
+const my $SECURITY_CSRF               => 'csrf';
+const my $SECURITY_SESSION_UA         => '_security_ua';
+const my $SECURITY_SESSION_IP         => '_security_ip';
+const my $SECURITY_MAX_FAILED_SESSION => 3;
+const my $SECURITY_MAX_FAILED_USER    => 5;
 
 ############################################################################
 sub setup {
@@ -176,23 +179,12 @@ sub security_hook {
     my $session_ua = session $SECURITY_SESSION_UA;
     my $session_ip = session $SECURITY_SESSION_IP;
 
-    # Lexical routine to void the current session.
-    my $void_session = sub {
-      my ($reason) = @_;
-      my $old_sid = session->id;
-      session->destroy;
-      session $SECURITY_SESSION_UA => $request_ua;
-      session $SECURITY_SESSION_IP => $request_ip;
-      info sprintf 'Session %s voided: %s', $old_sid, $reason;
-      return;
-    };
-
     # Check user agent.
     if ( !$session_ua ) {
       session $SECURITY_SESSION_UA => $request_ua;
     }
     elsif ( $request_ua ne $session_ua ) {
-      $void_session->('user agent does not match');
+      _void_session('user agent does not match');
     }
 
     # Check remote address.
@@ -200,7 +192,7 @@ sub security_hook {
       session $SECURITY_SESSION_IP => $request_ip;
     }
     elsif ( $request_ip ne $session_ip ) {
-      $void_session->('remote address does not match');
+      _void_session('remote address does not match');
     }
   }
 
@@ -209,6 +201,15 @@ sub security_hook {
   if ( my $referer = request->referer ) {
     my $uri_base = request->uri_base;
     set $SECURITY_CSRF => 1 if $referer !~ m/^\Q$uri_base\E/;
+  }
+
+  # Don't return to other sites.
+  if ( my $return_url = params->{return_url} ) {
+    my $uri_base = request->uri_base;
+    if ( $return_url !~ m{^\Q$uri_base\E|^/} ) {
+      delete params->{return_url};
+      info 'return_url voided';
+    }
   }
 
   return;
@@ -249,6 +250,79 @@ sub get_index_route {
 get q{/} => \&get_index_route;
 
 ############################################################################
+# Route handler: GET /login
+sub get_login_route {
+  return redirect params->{return_url} || q{/} if logged_in_user;
+  return redirect '/access-denied'
+    if ( session('login_failed') || 0 ) >= $SECURITY_MAX_FAILED_SESSION;
+  return template 'login', {
+    pagetitle    => 'Login',
+    login_failed => session('login_failed'),
+    return_url   => params->{return_url},
+    };
+}
+get q{/login} => \&get_login_route;
+
+############################################################################
+# Route handler: POST /login
+sub post_login_route {
+  return redirect params->{return_url} || q{/} if logged_in_user;
+
+  debug params->{return_url};
+
+  my $has_failed_user_logins =
+    int( eval { rset('User')->search( { username => params->{username} } )->first->has_failed_logins }
+      || 0 );
+  my $has_failed_logins = int( session('login_failed') || 0 );
+  return forward q{/login}, {}, { method => 'GET' }
+    if $has_failed_user_logins >= $SECURITY_MAX_FAILED_USER;
+  return redirect '/access-denied' if $has_failed_logins >= $SECURITY_MAX_FAILED_SESSION;
+
+  my ( $success, $realm ) = authenticate_user( params->{username}, params->{password} );
+  if ($success) {
+    _void_session('login');
+    session logged_in_user       => params->{username};
+    session logged_in_user_realm => $realm;
+    rset('User')->search( { username => params->{username} } )->update( { has_failed_logins => 0 } );
+    session login_failed => 0;
+    return redirect params->{return_url} || q{/};
+  }
+  else {
+    eval {
+      rset('User')->search( { username => params->{username} } )
+        ->update( { has_failed_logins => \'has_failed_logins + 1' } );
+    };
+    session login_failed => ++$has_failed_logins;
+    return forward q{/login}, {}, { method => 'GET' };
+  }
+
+}
+post q{/login} => \&post_login_route;
+
+############################################################################
+# Route handler: GET /access-denied
+sub get_access_denied_route {
+  status $HTTP_STATUS_FORBIDDEN;
+  return template 'access_denied', { pagetitle => 'Access Denied' };
+}
+get q{/access-denied} => \&get_access_denied_route;
+
+############################################################################
+# Route handler: GET /logout
+sub get_logout_route {
+  return redirect params->{return_url} || q{/} if !logged_in_user;
+  _void_session('logout');
+  return redirect params->{return_url} || q{/};
+}
+get q{/logout} => \&get_logout_route;
+
+############################################################################
+get q{/require-login} => require_login sub { 'require login' };
+get q{/require-admin} => require_role admin => sub { 'require admin' };
+get q{/require-not}   => require_role not   => sub { 'require not' };
+
+############################################################################
+# *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER ***
 # Not Found route handler.
 sub not_found_route {
   status $HTTP_STATUS_NOT_FOUND;
@@ -257,6 +331,18 @@ sub not_found_route {
     };
 }
 any qr{.*} => \&not_found_route;
+
+############################################################################
+# Lexical routine to void the current session.
+sub _void_session {
+  my ($reason) = @_;
+  my $old_sid = session->id;
+  session->destroy;
+  session $SECURITY_SESSION_UA => request->agent;
+  session $SECURITY_SESSION_IP => request->address;
+  info sprintf 'Session %s voided: %s', $old_sid, $reason;
+  return;
+}
 
 ############################################################################
 # Don't forget to return a true value from the file.
