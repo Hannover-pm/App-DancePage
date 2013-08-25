@@ -1,6 +1,6 @@
 # Basic Options
 --indent-columns=2
---maximum-line-length=90
+--maximum-line-length=100
 --variable-maximum-line-length
 --default-tabsize=2
 --check-syntax

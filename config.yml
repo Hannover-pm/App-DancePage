@@ -119,3 +119,40 @@ engines:
     line_start: '|%'
     tag_start: '<%'
     tag_end: '%>'
+
+# Configure plugins.
+plugins:
+  DBIC:
+    default:
+      dsn: dbi:SQLite:dbname=dancepage.db
+      schema_class: App::DancePage::Schema
+      options:
+        RaiseError: 1
+        sqlite_allow_multiple_statements: 1
+        sqlite_unicode: 1
+    unittest:
+      dsn: dbi:SQLite:dbname=dancepage-unittest.db
+      schema_class: App::DancePage::Schema
+      options:
+        RaiseError: 1
+        sqlite_allow_multiple_statements: 1
+        sqlite_unicode: 1
+    development:
+      dsn: dbi:SQLite:dbname=dancepage-development.db
+      schema_class: App::DancePage::Schema
+      options:
+        RaiseError: 1
+        sqlite_allow_multiple_statements: 1
+        sqlite_unicode: 1
+  Auth::Extensible:
+    no_default_pages: 0
+    disable_roles: 0
+    realms:
+      users:
+        provider: DBIC
+        db_connection_name: default
+        users_resultset: User
+        roles_relationship: roles
+        role_column: role
+        username_column: username
+        password_check: check_password

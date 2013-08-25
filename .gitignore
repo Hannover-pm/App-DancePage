@@ -1,6 +1,8 @@
 .*
 *.ERR
 tmp*.html
+*.bak
+*.db
 /App-DancePage-*
 /logs
 /sessions
