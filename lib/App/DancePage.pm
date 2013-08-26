@@ -342,7 +342,8 @@ sub get_logout_route {
   _void_session('logout');
   return redirect params->{return_url} || q{/};
 }
-get q{/logout} => \&get_logout_route;
+get q{/logout}  => \&get_logout_route;
+get q{/logout2} => \&get_logout_route;
 
 ############################################################################
 # Dynamic generic page route handler.

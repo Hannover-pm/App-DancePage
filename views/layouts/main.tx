@@ -30,7 +30,7 @@
           <li><a href="/acp">ACP</a></li>
 |% }
 |% if $logged_in_user {
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="/logout2">Logout</a></li>
 |% } else {
           <li><a href="/login">Login</a></li>
 |% }
