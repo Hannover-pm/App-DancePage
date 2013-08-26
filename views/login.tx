@@ -2,7 +2,7 @@
 |% if $login_failed {
       <p>Login failed <% $login_failed %> times.</p>
 |% }
-      <form action="/login" method="post" id="login_form">
+      <form action="/login2" method="post" id="login_form">
 |% if $return_url {
         <input type="hidden" name="return_url" value="<% $return_url %>">
 |% }

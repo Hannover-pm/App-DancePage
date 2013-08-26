@@ -250,10 +250,24 @@ sub token_hook {
 
   # Register Dancer::Plugin::Auth::Extensible keywords.
   $tokens->{logged_in_user} = logged_in_user;
+  $tokens->{user_has_role}  = sub {
+    my ($role) = @_;
+    return 0 unless logged_in_user;
+    return user_has_role($role) ? 1 : 0;
+  };
 
   return;
 }
 hook before_template_render => \&token_hook;
+
+############################################################################
+# Route handler: GET /acp
+sub any_acp_route {
+  content_type 'text/plain';
+  return 'TODO';
+}
+any q{/acp}      => require_role admin => \&any_acp_route;
+any qr{^/acp/.*} => require_role admin => \&any_acp_route;
 
 ############################################################################
 # Route handler: GET /
@@ -310,7 +324,8 @@ sub post_login_route {
   }
 
 }
-post q{/login} => \&post_login_route;
+post q{/login}  => \&post_login_route;
+post q{/login2} => \&post_login_route;
 
 ############################################################################
 # Route handler: GET /access-denied

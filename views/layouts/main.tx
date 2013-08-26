@@ -26,6 +26,14 @@
           <li><a href="/about-me">About me</a></li>
           <li><a href="/blog">Blog</a></li>
           <li><a href="/contact">Contact</a></li>
+|% if $user_has_role('admin') {
+          <li><a href="/acp">ACP</a></li>
+|% }
+|% if $logged_in_user {
+          <li><a href="/logout">Logout</a></li>
+|% } else {
+          <li><a href="/login">Login</a></li>
+|% }
         </ul>
         <div id="topnav_clearing"></div>
       </nav>
