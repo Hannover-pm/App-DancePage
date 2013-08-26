@@ -23,6 +23,28 @@ body {
   color: inherit;
   text-decoration: inherit;
 }
+#topnav {
+  padding-top: .4em;
+}
+ul.topnav {
+  padding: 0;
+  float: right;
+  list-style: inside none;
+}
+ul.topnav li {
+  float: left;
+}
+ul.topnav li a {
+  display: block;
+  padding: .3em .5em;
+  border-left: thin solid black;
+  border-top: thin solid black;
+  color: inherit;
+  text-decoration: none;
+}
+#topnav_clearing {
+  clear: both;
+}
 #main {
   padding: 11pt;
 }

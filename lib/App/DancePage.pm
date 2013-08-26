@@ -75,6 +75,8 @@ const my $SECURITY_SESSION_UA         => '_security_ua';
 const my $SECURITY_SESSION_IP         => '_security_ip';
 const my $SECURITY_MAX_FAILED_SESSION => 3;
 const my $SECURITY_MAX_FAILED_USER    => 5;
+const my $GENERIC_PAGE_CATEGORY_ID    => 1;
+const my $BLOG_CATEGORY_ID            => 2;
 
 ############################################################################
 sub setup {
@@ -106,11 +108,13 @@ sub setup {
 
       # Register default categories.
       my $generic_page_category = rset('Category')->create( {
+        category_id  => $GENERIC_PAGE_CATEGORY_ID,
         category     => 'Special Pages',
         abstract     => 'Special pages which doesn\'t belong to categories.',
         category_uri => '',
       } );
       my $blog_category = rset('Category')->create( {
+        category_id  => $BLOG_CATEGORY_ID,
         category     => 'Blog',
         abstract     => 'My web diary',
         category_uri => 'blog',
@@ -125,6 +129,15 @@ sub setup {
           message        => 'Here are some information about me for you.',
           publication_on => DateTime->now,
           page_uri       => 'about-me',
+        } );
+      $generic_page_category->create_related(
+        'pages', {
+          author         => $root_user,
+          subject        => 'Contact',
+          abstract       => 'Some contact information about me',
+          message        => 'Here are some contact information about me for you.',
+          publication_on => DateTime->now,
+          page_uri       => 'contact',
         } );
       $blog_category->create_related(
         'pages', {
@@ -315,6 +328,60 @@ sub get_logout_route {
   return redirect params->{return_url} || q{/};
 }
 get q{/logout} => \&get_logout_route;
+
+############################################################################
+# Dynamic generic page route handler.
+sub get_generic_page_route {
+  my $generic_page =
+    rset('Category')->search( { 'me.category_id' => $GENERIC_PAGE_CATEGORY_ID } )->search_related(
+    'pages', {
+      page_uri => params->{page_uri},
+    } )->first;
+  return get_category_route( params->{page_uri} ) if !$generic_page;
+  return template 'page', {
+    pagetitle    => $generic_page->subject,
+    pageabstract => $generic_page->abstract,
+    pagekeywords => [ map { $_->tag } $generic_page->tags->all ],
+    pagecategory => $generic_page->category->category,
+    pageauthor   => $generic_page->author->username,
+    page         => $generic_page,
+    };
+}
+get q{/:page_uri} => \&get_generic_page_route;
+
+############################################################################
+# Dynamic category route handler. Invoker: get_generic_page_route
+sub get_category_route {
+  my ($category_uri) = @_;
+  my $category = rset('Category')->search( { 'me.category_uri' => $category_uri } )->first;
+  return not_found_route() if !$category;
+  return template 'category', {
+    pageabstract => $category->abstract,
+    pagecategory => $category->category,
+    category     => $category,
+    pages        => [ $category->pages->all ],
+    };
+}
+
+############################################################################
+# Dynamic category page route handler.
+sub get_category_page_route {
+  my $page =
+    rset('Category')->search( { 'me.category_uri' => params->{category_uri} } )->search_related(
+    'pages', {
+      page_uri => params->{page_uri},
+    } )->first;
+  return not_found_route() if !$page;
+  return template 'page', {
+    pagetitle    => $page->subject,
+    pageabstract => $page->abstract,
+    pagekeywords => [ map { $_->tag } $page->tags->all ],
+    pagecategory => $page->category->category,
+    pageauthor   => $page->author->username,
+    page         => $page,
+    };
+}
+get q{/:category_uri/:page_uri} => \&get_category_page_route;
 
 ############################################################################
 # *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER *** LAST ROUTE HANDLER ***

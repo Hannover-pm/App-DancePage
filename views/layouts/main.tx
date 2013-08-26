@@ -20,6 +20,15 @@
   <body>
     <header id="header" role="banner">
       <h1 id="sitename"><a href="<% $request.uri_base %>"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></a></h1>
+      <nav id="topnav">
+        <ul class="topnav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about-me">About me</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div id="topnav_clearing"></div>
+      </nav>
     </header>
     <div id="main">
 |% $content | raw
