@@ -270,7 +270,9 @@ get q{/acp/user} => require_role admin => \&get_acp_user_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_list_route {
-  return template 'acp_user_list';
+  return template 'acp_user_list', {
+    users => [],
+    };
 }
 get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
 
@@ -291,7 +293,9 @@ post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_edit_route {
-  return template 'acp_user_edit';
+  return template 'acp_user_edit', {
+    user => [],
+    };
 }
 get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
 
@@ -310,13 +314,67 @@ sub get_acp_user_delete_route {
 get q{/acp/user/:user_id/delete} => require_role admin => \&get_acp_user_delete_route;
 
 ############################################################################
+# Route handler: GET /acp/category
+sub get_acp_category_route {
+  return template 'acp_category_index';
+}
+get q{/acp/category} => require_role admin => \&get_acp_category_route;
+
+############################################################################
+# Route handler: GET /acp/category/list
+sub get_acp_category_list_route {
+  return template 'acp_category_list', {
+    categories => [],
+    };
+}
+get q{/acp/category/list} => require_role admin => \&get_acp_category_list_route;
+
+############################################################################
+# Route handler: GET /acp/category/list
+sub get_acp_category_create_route {
+  return template 'acp_category_create';
+}
+get q{/acp/category/create} => require_role admin => \&get_acp_category_create_route;
+
+############################################################################
+# Route handler: POST /acp/category/list
+sub post_acp_category_create_route {
+  return redirect sprintf '/acp/category/%s', 'TODO';
+}
+post q{/acp/category/create} => require_role admin => \&post_acp_category_create_route;
+
+############################################################################
+# Route handler: GET /acp/category/list
+sub get_acp_category_edit_route {
+  return template 'acp_category_edit', {
+    category => [],
+    };
+}
+get q{/acp/category/:category_id} => require_role admin => \&get_acp_category_edit_route;
+
+############################################################################
+# Route handler: POST /acp/category/list
+sub post_acp_category_edit_route {
+  return redirect sprintf '/acp/category/%s', params->{category_id};
+}
+post q{/acp/category/:category_id} => require_role admin => \&post_acp_category_edit_route;
+
+############################################################################
+# Route handler: GET /acp/category/list
+sub get_acp_category_delete_route {
+  return redirect '/acp/category';
+}
+get q{/acp/category/:category_id/delete} => require_role admin => \&get_acp_category_delete_route;
+
+############################################################################
 # Route handler: GET /acp
 sub any_acp_route {
-  content_type 'text/plain';
-  return 'TODO';
+  return template 'acp_index';
 }
-any q{/acp}      => require_role admin => \&any_acp_route;
-any qr{^/acp/.*} => require_role admin => \&any_acp_route;
+any q{/acp} => require_role admin => \&any_acp_route;
+
+############################################################################
+any qr{^/acp/.*} => require_role admin => sub { 'No Way!' };
 
 ############################################################################
 # Route handler: GET /-\d+
