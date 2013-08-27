@@ -420,6 +420,59 @@ sub get_acp_page_delete_route {
 get q{/acp/page/:page_id/delete} => require_role admin => \&get_acp_page_delete_route;
 
 ############################################################################
+# Route handler: GET /acp/tag
+sub get_acp_tag_route {
+  return template 'acp_tag_index';
+}
+get q{/acp/tag} => require_role admin => \&get_acp_tag_route;
+
+############################################################################
+# Route handler: GET /acp/tag/list
+sub get_acp_tag_list_route {
+  return template 'acp_tag_list', {
+    tags => [],
+    };
+}
+get q{/acp/tag/list} => require_role admin => \&get_acp_tag_list_route;
+
+############################################################################
+# Route handler: GET /acp/tag/list
+sub get_acp_tag_create_route {
+  return template 'acp_tag_create';
+}
+get q{/acp/tag/create} => require_role admin => \&get_acp_tag_create_route;
+
+############################################################################
+# Route handler: POST /acp/tag/list
+sub post_acp_tag_create_route {
+  return redirect sprintf '/acp/tag/%s', 'TODO';
+}
+post q{/acp/tag/create} => require_role admin => \&post_acp_tag_create_route;
+
+############################################################################
+# Route handler: GET /acp/tag/list
+sub get_acp_tag_edit_route {
+  return template 'acp_tag_edit', {
+    tag => [],
+    };
+}
+get q{/acp/tag/:tag_id} => require_role admin => \&get_acp_tag_edit_route;
+
+############################################################################
+# Route handler: POST /acp/tag/list
+sub post_acp_tag_edit_route {
+  return redirect sprintf '/acp/tag/%s', params->{tag_id};
+}
+post q{/acp/tag/:tag_id} => require_role admin => \&post_acp_tag_edit_route;
+
+############################################################################
+# Route handler: GET /acp/tag/list
+sub get_acp_tag_delete_route {
+  return redirect '/acp/tag';
+}
+get q{/acp/tag/:tag_id/delete} => require_role admin => \&get_acp_tag_delete_route;
+
+############################################################################
 # Route handler: GET /acp
 sub any_acp_route {
   return template 'acp_index';
