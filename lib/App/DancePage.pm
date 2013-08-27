@@ -402,12 +402,16 @@ get q{/:page_uri} => \&get_generic_page_route;
 sub get_category_route {
   my ($category_uri) = @_;
   my $category = rset('Category')->search( { 'me.category_uri' => $category_uri } )->first;
+  my $pages = $category->pages->search(
+    undef, {
+      order_by => { -desc => [qw( publication_on page_id )] },
+    } );
   return not_found_route() if !$category;
   return template 'category', {
     pageabstract => $category->abstract,
     pagecategory => $category->category,
     category     => $category,
-    pages        => [ $category->pages->all ],
+    pages        => [ $pages->all ],
     };
 }
 
