@@ -1,3 +1,7 @@
-      <h2 id="pagetitle"><% $pagetitle %></h2>
-      <p><% $page.abstract %></p>
+      <article>
+        <h2 id="pagetitle"><% $pagetitle %></h2>
+        <p><% $page.abstract %></p>
 |% $page.message
+
+        <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
+      </article>

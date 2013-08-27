@@ -270,6 +270,33 @@ any q{/acp}      => require_role admin => \&any_acp_route;
 any qr{^/acp/.*} => require_role admin => \&any_acp_route;
 
 ############################################################################
+# Route handler: GET /-\d+
+sub get_permalink_route {
+  my ($page_id) = splat;
+  my $page = rset('Page')->search( { page_id => $page_id } )->first;
+  return not_found_route() if !$page;
+  return redirect sprintf '/%s', $page->page_uri if !$page->category->category_uri;
+  return redirect sprintf '/%s/%s', $page->category->category_uri, $page->page_uri;
+}
+get qr{^/-(\d+)$} => \&get_permalink_route;
+
+############################################################################
+# Route handler: GET /robots.txt
+sub get_robots_route {
+  content_type 'text/plain';
+  return <<'_ROBOTS_TXT_';
+User-agent: *
+Disallow: /acp
+Disallow: /acp/*
+Disallow: /login
+Disallow: /login2
+Disallow: /logout
+Disallow: /logout2
+_ROBOTS_TXT_
+}
+get q{/robots.txt} => \&get_robots_route;
+
+############################################################################
 # Route handler: GET /
 sub get_index_route {
   return template 'index';
@@ -286,6 +313,7 @@ sub get_login_route {
     pagetitle    => 'Login',
     login_failed => session('login_failed'),
     return_url   => params->{return_url},
+    pagerobots   => 'noindex,nofollow,noarchive',
     };
 }
 get q{/login}  => \&get_login_route;
@@ -332,7 +360,10 @@ post q{/login2} => \&post_login_route;
 # Route handler: GET /access-denied
 sub get_access_denied_route {
   status $HTTP_STATUS_FORBIDDEN;
-  return template 'access_denied', { pagetitle => 'Access Denied' };
+  return template 'access_denied', {
+    pagetitle  => 'Access Denied',
+    pagerobots => 'noindex,nofollow,noarchive',
+    };
 }
 get q{/access-denied} => \&get_access_denied_route;
 
@@ -406,7 +437,8 @@ get q{/:category_uri/:page_uri} => \&get_category_page_route;
 sub not_found_route {
   status $HTTP_STATUS_NOT_FOUND;
   return template 'not_found', {
-    pagetitle => 'Error 404',
+    pagetitle  => 'Error 404',
+    pagerobots => 'noindex,nofollow,noarchive',
     };
 }
 any qr{.*} => \&not_found_route;
