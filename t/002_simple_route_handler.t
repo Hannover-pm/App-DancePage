@@ -43,28 +43,28 @@ foreach my $path ( @{$SIMPLE_GET_ROUTES} ) {
 # Check authentification route handlers.
 {
   route_exists(
-    [ GET => q{/login} ],
-    qq{route handler exists: GET /login},
+    [ GET => q{/login2} ],
+    qq{route handler exists: GET /login2},
   ) or diag Dumper [read_logs];
   response_status_is(
-    [ GET => q{/login} ],
+    [ GET => q{/login2} ],
     $HTTP_STATUS_OK,
-    qq{route handler HTTP status $HTTP_STATUS_OK: GET /login},
+    qq{route handler HTTP status $HTTP_STATUS_OK: GET /login2},
   ) or diag Dumper [read_logs];
 
   route_exists(
-    [ POST => q{/login} ],
-    qq{route handler exists: POST /login},
+    [ POST => q{/login2} ],
+    qq{route handler exists: POST /login2},
   ) or diag Dumper [read_logs];
 
   route_exists(
-    [ GET => q{/logout} ],
-    qq{route handler exists: GET /logout},
+    [ GET => q{/logout2} ],
+    qq{route handler exists: GET /logout2},
   ) or diag Dumper [read_logs];
   response_status_is(
-    [ GET => q{/logout} ],
+    [ GET => q{/logout2} ],
     $HTTP_STATUS_FOUND,
-    qq{route handler HTTP status $HTTP_STATUS_FOUND: GET /logout},
+    qq{route handler HTTP status $HTTP_STATUS_FOUND: GET /logout2},
   ) or diag Dumper [read_logs];
 
   route_exists(
