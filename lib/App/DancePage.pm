@@ -261,6 +261,55 @@ sub token_hook {
 hook before_template_render => \&token_hook;
 
 ############################################################################
+# Route handler: GET /acp/user
+sub get_acp_user_route {
+  return template 'acp_user_index';
+}
+get q{/acp/user} => require_role admin => \&get_acp_user_route;
+
+############################################################################
+# Route handler: GET /acp/user/list
+sub get_acp_user_list_route {
+  return template 'acp_user_list';
+}
+get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
+
+############################################################################
+# Route handler: GET /acp/user/list
+sub get_acp_user_create_route {
+  return template 'acp_user_create';
+}
+get q{/acp/user/create} => require_role admin => \&get_acp_user_create_route;
+
+############################################################################
+# Route handler: POST /acp/user/list
+sub post_acp_user_create_route {
+  return redirect sprintf '/acp/user/%s', 'TODO';
+}
+post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
+
+############################################################################
+# Route handler: GET /acp/user/list
+sub get_acp_user_edit_route {
+  return template 'acp_user_edit';
+}
+get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
+
+############################################################################
+# Route handler: POST /acp/user/list
+sub post_acp_user_edit_route {
+  return redirect sprintf '/acp/user/%s', params->{user_id};
+}
+post q{/acp/user/:user_id} => require_role admin => \&post_acp_user_edit_route;
+
+############################################################################
+# Route handler: GET /acp/user/list
+sub get_acp_user_delete_route {
+  return redirect '/acp/user';
+}
+get q{/acp/user/:user_id/delete} => require_role admin => \&get_acp_user_delete_route;
+
+############################################################################
 # Route handler: GET /acp
 sub any_acp_route {
   content_type 'text/plain';
