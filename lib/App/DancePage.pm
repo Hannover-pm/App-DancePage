@@ -367,6 +367,59 @@ sub get_acp_category_delete_route {
 get q{/acp/category/:category_id/delete} => require_role admin => \&get_acp_category_delete_route;
 
 ############################################################################
+# Route handler: GET /acp/page
+sub get_acp_page_route {
+  return template 'acp_page_index';
+}
+get q{/acp/page} => require_role admin => \&get_acp_page_route;
+
+############################################################################
+# Route handler: GET /acp/page/list
+sub get_acp_page_list_route {
+  return template 'acp_page_list', {
+    pages => [],
+    };
+}
+get q{/acp/page/list} => require_role admin => \&get_acp_page_list_route;
+
+############################################################################
+# Route handler: GET /acp/page/list
+sub get_acp_page_create_route {
+  return template 'acp_page_create';
+}
+get q{/acp/page/create} => require_role admin => \&get_acp_page_create_route;
+
+############################################################################
+# Route handler: POST /acp/page/list
+sub post_acp_page_create_route {
+  return redirect sprintf '/acp/page/%s', 'TODO';
+}
+post q{/acp/page/create} => require_role admin => \&post_acp_page_create_route;
+
+############################################################################
+# Route handler: GET /acp/page/list
+sub get_acp_page_edit_route {
+  return template 'acp_page_edit', {
+    page => [],
+    };
+}
+get q{/acp/page/:page_id} => require_role admin => \&get_acp_page_edit_route;
+
+############################################################################
+# Route handler: POST /acp/page/list
+sub post_acp_page_edit_route {
+  return redirect sprintf '/acp/page/%s', params->{page_id};
+}
+post q{/acp/page/:page_id} => require_role admin => \&post_acp_page_edit_route;
+
+############################################################################
+# Route handler: GET /acp/page/list
+sub get_acp_page_delete_route {
+  return redirect '/acp/page';
+}
+get q{/acp/page/:page_id/delete} => require_role admin => \&get_acp_page_delete_route;
+
+############################################################################
 # Route handler: GET /acp
 sub any_acp_route {
   return template 'acp_index';
