@@ -288,7 +288,8 @@ sub get_login_route {
     return_url   => params->{return_url},
     };
 }
-get q{/login} => \&get_login_route;
+get q{/login}  => \&get_login_route;
+get q{/login2} => \&get_login_route;
 
 ############################################################################
 # Route handler: POST /login
