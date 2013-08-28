@@ -342,8 +342,9 @@ get q{/acp/category} => require_role admin => \&get_acp_category_route;
 ############################################################################
 # Route handler: GET /acp/category/list
 sub get_acp_category_list_route {
+  my $categories = rset('Category')->all;
   return template 'acp_category_list', {
-    categories => [],
+    categories => [$categories],
     };
 }
 get q{/acp/category/list} => require_role admin => \&get_acp_category_list_route;
@@ -358,15 +359,23 @@ get q{/acp/category/create} => require_role admin => \&get_acp_category_create_r
 ############################################################################
 # Route handler: POST /acp/category/list
 sub post_acp_category_create_route {
-  return redirect sprintf '/acp/category/%s', 'TODO';
+  my $category = rset('Category')->create( {
+    category     => params->{category},
+    abstract     => params->{abstract},
+    category_uri => params->{category_uri},
+  } );
+  return not_found_route() if !$category;
+  return redirect sprintf '/acp/category/%s', $category->category_id;
 }
 post q{/acp/category/create} => require_role admin => \&post_acp_category_create_route;
 
 ############################################################################
 # Route handler: GET /acp/category/list
 sub get_acp_category_edit_route {
+  my $category = rset('Category')->search( { category_id => params->{category_id} } )->first;
+  return not_found_route() if !$category;
   return template 'acp_category_edit', {
-    category => [],
+    category => $category,
     };
 }
 get q{/acp/category/:category_id} => require_role admin => \&get_acp_category_edit_route;
@@ -374,6 +383,13 @@ get q{/acp/category/:category_id} => require_role admin => \&get_acp_category_ed
 ############################################################################
 # Route handler: POST /acp/category/list
 sub post_acp_category_edit_route {
+  my $category = rset('Category')->search( { category_id => params->{category_id} } )->first;
+  return not_found_route() if !$category;
+  $category->create( {
+    category     => params->{category},
+    abstract     => params->{abstract},
+    category_uri => params->{category_uri},
+  } );
   return redirect sprintf '/acp/category/%s', params->{category_id};
 }
 post q{/acp/category/:category_id} => require_role admin => \&post_acp_category_edit_route;
@@ -381,6 +397,9 @@ post q{/acp/category/:category_id} => require_role admin => \&post_acp_category_
 ############################################################################
 # Route handler: GET /acp/category/list
 sub get_acp_category_delete_route {
+  my $category = rset('Category')->search( { category_id => params->{category_id} } )->first;
+  return not_found_route() if !$category;
+  $category->delete;
   return redirect '/acp/category';
 }
 get q{/acp/category/:category_id/delete} => require_role admin => \&get_acp_category_delete_route;
