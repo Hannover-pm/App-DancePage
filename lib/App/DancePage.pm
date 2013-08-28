@@ -272,7 +272,7 @@ get q{/acp/user} => require_role admin => \&get_acp_user_route;
 sub get_acp_user_list_route {
   my $users = rset('User');
   return template 'acp_user_list', {
-    users => [$users->all],
+    users => [ $users->all ],
     };
 }
 get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
@@ -344,7 +344,7 @@ get q{/acp/category} => require_role admin => \&get_acp_category_route;
 sub get_acp_category_list_route {
   my $categories = rset('Category');
   return template 'acp_category_list', {
-    categories => [$categories->all],
+    categories => [ $categories->all ],
     };
 }
 get q{/acp/category/list} => require_role admin => \&get_acp_category_list_route;
@@ -414,8 +414,9 @@ get q{/acp/page} => require_role admin => \&get_acp_page_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_list_route {
+  my $pages = rset('Page');
   return template 'acp_page_list', {
-    pages => [],
+    pages => [ $pages->all ],
     };
 }
 get q{/acp/page/list} => require_role admin => \&get_acp_page_list_route;
@@ -437,8 +438,10 @@ post q{/acp/page/create} => require_role admin => \&post_acp_page_create_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_edit_route {
+  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  return not_found_route() if !$page;
   return template 'acp_page_edit', {
-    page => [],
+    page => $page,
     };
 }
 get q{/acp/page/:page_id} => require_role admin => \&get_acp_page_edit_route;
@@ -446,6 +449,8 @@ get q{/acp/page/:page_id} => require_role admin => \&get_acp_page_edit_route;
 ############################################################################
 # Route handler: POST /acp/page/list
 sub post_acp_page_edit_route {
+  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  return not_found_route() if !$page;
   return redirect sprintf '/acp/page/%s', params->{page_id};
 }
 post q{/acp/page/:page_id} => require_role admin => \&post_acp_page_edit_route;
@@ -453,6 +458,9 @@ post q{/acp/page/:page_id} => require_role admin => \&post_acp_page_edit_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_delete_route {
+  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  return not_found_route() if !$page;
+  $page->delete;
   return redirect '/acp/page';
 }
 get q{/acp/page/:page_id/delete} => require_role admin => \&get_acp_page_delete_route;
@@ -467,8 +475,9 @@ get q{/acp/tag} => require_role admin => \&get_acp_tag_route;
 ############################################################################
 # Route handler: GET /acp/tag/list
 sub get_acp_tag_list_route {
+  my $tags = rset('Tag');
   return template 'acp_tag_list', {
-    tags => [],
+    tags => [ $tags->all ],
     };
 }
 get q{/acp/tag/list} => require_role admin => \&get_acp_tag_list_route;
@@ -490,8 +499,10 @@ post q{/acp/tag/create} => require_role admin => \&post_acp_tag_create_route;
 ############################################################################
 # Route handler: GET /acp/tag/list
 sub get_acp_tag_edit_route {
+  my $tag = rset('Tag')->search( { tag_id => params->{tag_id} } )->first;
+  return not_found_route() if !$tag;
   return template 'acp_tag_edit', {
-    tag => [],
+    tag => $tag,
     };
 }
 get q{/acp/tag/:tag_id} => require_role admin => \&get_acp_tag_edit_route;
@@ -499,6 +510,8 @@ get q{/acp/tag/:tag_id} => require_role admin => \&get_acp_tag_edit_route;
 ############################################################################
 # Route handler: POST /acp/tag/list
 sub post_acp_tag_edit_route {
+  my $tag = rset('Tag')->search( { tag_id => params->{tag_id} } )->first;
+  return not_found_route() if !$tag;
   return redirect sprintf '/acp/tag/%s', params->{tag_id};
 }
 post q{/acp/tag/:tag_id} => require_role admin => \&post_acp_tag_edit_route;
@@ -506,6 +519,9 @@ post q{/acp/tag/:tag_id} => require_role admin => \&post_acp_tag_edit_route;
 ############################################################################
 # Route handler: GET /acp/tag/list
 sub get_acp_tag_delete_route {
+  my $tag = rset('Tag')->search( { tag_id => params->{tag_id} } )->first;
+  return not_found_route() if !$tag;
+  $tag->delete;
   return redirect '/acp/tag';
 }
 get q{/acp/tag/:tag_id/delete} => require_role admin => \&get_acp_tag_delete_route;
