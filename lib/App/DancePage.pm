@@ -270,8 +270,9 @@ get q{/acp/user} => require_role admin => \&get_acp_user_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_list_route {
+  my $users = rset('User')->all;
   return template 'acp_user_list', {
-    users => [],
+    users => [$users],
     };
 }
 get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
@@ -286,15 +287,23 @@ get q{/acp/user/create} => require_role admin => \&get_acp_user_create_route;
 ############################################################################
 # Route handler: POST /acp/user/list
 sub post_acp_user_create_route {
-  return redirect sprintf '/acp/user/%s', 'TODO';
+  my $user = rset('User')->create( {
+    username  => params->{username},
+    email     => params->{email},
+    password  => params->{password},
+    signup_on => DateTime->now,
+  } );
+  return redirect sprintf '/acp/user/%s', $user->user_id;
 }
 post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
 
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_edit_route {
+  my $user = rset('User')->search( { user_id => params->{user_id} } )->first;
+  return not_found_route() if !$user;
   return template 'acp_user_edit', {
-    user => [],
+    user => $user,
     };
 }
 get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
@@ -302,6 +311,13 @@ get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
 ############################################################################
 # Route handler: POST /acp/user/list
 sub post_acp_user_edit_route {
+  my $user = rset('User')->search( { user_id => params->{user_id} } )->first;
+  return not_found_route() if !$user;
+  $user->update( {
+    username => params->{username},
+    email    => params->{email},
+    ( params->{password} ? ( password => params->{password} ) : () ),
+  } );
   return redirect sprintf '/acp/user/%s', params->{user_id};
 }
 post q{/acp/user/:user_id} => require_role admin => \&post_acp_user_edit_route;
@@ -309,6 +325,9 @@ post q{/acp/user/:user_id} => require_role admin => \&post_acp_user_edit_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_delete_route {
+  my $user = rset('User')->search( { user_id => params->{user_id} } )->first;
+  return not_found_route() if !$user;
+  $user->delete;
   return redirect '/acp/user';
 }
 get q{/acp/user/:user_id/delete} => require_role admin => \&get_acp_user_delete_route;
