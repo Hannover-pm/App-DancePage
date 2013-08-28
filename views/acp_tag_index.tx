@@ -1,1 +1,8 @@
-<p>Hallo World acp_tag_index</p>
+      <h2 id="pagetitle">Admin Control Panel</h2>
+      <h3>Tag-Verwaltung</h3>
+      <p>Tags auflisten, anlegen, bearbeiten und löschen.</p>
+      <p>Bitte eine der folgenden Funktionen auswählen:</p>
+      <ul>
+        <li><a href="/acp/tag/list">Alle Tags auflisten</a></li>
+        <li><a href="/acp/tag/create">Neue Tag anlegen</a></li>
+      </ul>

@@ -1,17 +1,42 @@
-<a href= acp/user/index>acp_user_index</a><br/>
-<a href= acp/user/list>acp_user_list</a><br/>
-<a href= acp/user/create>acp_user_create</a><br/>
-<a href= acp/user/edit>acp_user_edit</a><br/>
-<a href= acp/category/index>acp_category_index</a><br/>
-<a href= acp/category/list>acp_category_list</a><br/>
-<a href= acp/category/create>acp_category_create</a><br/>
-<a href= acp/category/edit>acp_category_edit</a><br/>
-<a href= acp/page/index>acp_page_index</a><br/>
-<a href= acp/page/list>acp_page_list</a><br/>
-<a href= acp/page/create>acp_page_create</a><br/>
-<a href= acp/page/edit>acp_page_edit</a><br/>
-<a href= acp/tag/index>acp_tag_index</a><br/>
-<a href= acp/tag/list>acp_tag_list</a><br/>
-<a href= acp/tag/create>acp_tag_create</a><br/>
-<a href= acp/tag/edit>acp_tag_edit</a><br/>
-<a href= acp/index>acp_index</a><br/>
+      <h2 id="pagetitle">Admin Control Panel</h2>
+      <p>Bitte eine der folgenden Funktionen auswählen:</p>
+      <ul>
+        <li>
+          <a href="/acp/user">Benutzerverwaltung</a>
+          <br>
+          <small>Benutzer auflisten, anlegen, bearbeiten und löschen sowie Rollen verwalten.</small>
+          <ul>
+            <li><a href="/acp/user/list">Alle Benutzer auflisten</a></li>
+            <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
+            <li><a href="/acp/role/list">Alle Rollen auflisten</a></li>
+            <li><a href="/acp/role/create">Neue Rolle hinzufügen</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="/acp/page">Seitenverwaltung</a>
+          <br>
+          <small>Seiten auflisten, anlegen, bearbeiten und löschen sowie Seitenkommentare verwalten.</small>
+          <ul>
+            <li><a href="/acp/page/list">Alle Seiten auflisten</a></li>
+            <li><a href="/acp/page/create">Neue Seite anlegen</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="/acp/category">Kategorieverwaltung</a>
+          <br>
+          <small>Kategorien auflisten, anlegen, bearbeiten und löschen.</small>
+          <ul>
+            <li><a href="/acp/category/list">Alle Kategorien auflisten</a></li>
+            <li><a href="/acp/category/create">Neue Kategorie anlegen</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="/acp/tag">Tag-Verwaltung</a>
+          <br>
+          <small>Tags auflisten, anlegen, bearbeiten und löschen.</small>
+          <ul>
+            <li><a href="/acp/tag/list">Alle Tags auflisten</a></li>
+            <li><a href="/acp/tag/create">Neuen Tag anlegen</a></li>
+          </ul>
+        </li>
+      </ul>
