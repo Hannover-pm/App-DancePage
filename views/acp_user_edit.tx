@@ -1,1 +1,62 @@
-<p>Hallo World acp_user_edit</p>
+      <form action="<% $request.uri %>" method="post">
+        <article>
+          <header>
+            <hgroup>
+              <h2 id="pagetitle">Admin Control Panel</h2>
+              <h3>Benutzerverwaltung</h3>
+              <h4>Benutzer <var><% $user.username %></var> bearbeiten</h4>
+            </hgroup>
+          </header>
+          <table border="1">
+            <colgroup>
+              <col width="150">
+              <col width="250">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>Benutzer-ID</th>
+                <td><% $user.user_id %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Benutzername</th>
+                <td><input type="text" name="username" value="<% $user.username %>" required autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>E-Mail</th>
+                <td><input type="text" name="email" value="<% $user.email %>" required autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Neues Passwort</th>
+                <td><input type="password" name="password" autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Registriert am</th>
+                <td><% $user.signup_on.clone.set_time_zone('Europe/Berlin').strftime('%d.%m.%Y, %H:%M:%S Uhr') %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Zuletzt angemeldet am</th>
+                <td><% if $user.last_login_on { $user.last_login_on.clone.set_time_zone('Europe/Berlin').strftime('%d.%m.%Y, %H:%M:%S Uhr') } else { 'noch kein erfolgreicher Login' } %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Anzahl fehlgeschla&shy;gener Logins</th>
+                <td>
+                  <% $user.has_failed_logins %>
+                  <br>
+                  <label><input type="checkbox" name="has_failed_logins" value="0"> Zähler zurücksetzen</label>
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Zugewiesene Rollen</th>
+                <td><% $_rset_all($user.roles, 'role').join(', ') %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th></th>
+                <td>
+                  <input type="submit" value="Speichern">
+                  <input type="reset" value="Abbrechen">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </form>

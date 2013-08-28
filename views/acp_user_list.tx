@@ -1,8 +1,21 @@
       <h2 id="pagetitle">Admin Control Panel</h2>
       <h3>Benutzerverwaltung</h3>
       <h4>Alle Benutzer auflisten</h4>
-      <ul>
+      <table border="1">
+        <thead>
+          <tr align="left" valign="top">
+            <th align="right">ID</th>
+            <th>Benutzername</th>
+            <th>Rollen</th>
+          </tr>
+        </thead>
+        <tbody>
 |% for $users -> $user {
-        <li><a href="/acp/user/<% $user.user_id %>"><% $user.username %></a></li>
+          <tr align="left" valign="top">
+            <td align="right"><a href="/acp/user/<% $user.user_id %>"><% $user.user_id %></a></td>
+            <td><a href="/acp/user/<% $user.user_id %>"><% $user.username %></a></td>
+            <td><% $_rset_all($user.roles, 'role').join(', ') %></td>
+          </tr>
 |% }
-      </ul>
+        </tbody>
+      </table>

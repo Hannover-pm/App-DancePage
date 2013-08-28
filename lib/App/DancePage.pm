@@ -256,6 +256,11 @@ sub token_hook {
     return user_has_role($role) ? 1 : 0;
   };
 
+  $tokens->{_rset_all} = sub {
+    my ( $rset, $field ) = @_;
+    return $field ? [ map { $_->$field } $_[0]->all ] : [ $_[0]->all ];
+  };
+
   return;
 }
 hook before_template_render => \&token_hook;
@@ -316,7 +321,8 @@ sub post_acp_user_edit_route {
   $user->update( {
     username => params->{username},
     email    => params->{email},
-    ( params->{password} ? ( password => params->{password} ) : () ),
+    ( defined params->{has_failed_logins} ? ( has_failed_logins => params->{has_failed_logins} ) : () ),
+    ( params->{password}                  ? ( password          => params->{password} )          : () ),
   } );
   return redirect sprintf '/acp/user/%s', params->{user_id};
 }
@@ -606,7 +612,10 @@ sub post_login_route {
     _void_session('login');
     session logged_in_user       => params->{username};
     session logged_in_user_realm => $realm;
-    rset('User')->search( { username => params->{username} } )->update( { has_failed_logins => 0 } );
+    rset('User')->search( { username => params->{username} } )->update( {
+      last_login_on     => DateTime->now,
+      has_failed_logins => 0,
+    } );
     session login_failed => 0;
     return redirect params->{return_url} || q{/};
   }
