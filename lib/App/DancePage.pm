@@ -270,9 +270,9 @@ get q{/acp/user} => require_role admin => \&get_acp_user_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_list_route {
-  my $users = rset('User')->all;
+  my $users = rset('User');
   return template 'acp_user_list', {
-    users => [$users],
+    users => [$users->all],
     };
 }
 get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
@@ -342,9 +342,9 @@ get q{/acp/category} => require_role admin => \&get_acp_category_route;
 ############################################################################
 # Route handler: GET /acp/category/list
 sub get_acp_category_list_route {
-  my $categories = rset('Category')->all;
+  my $categories = rset('Category');
   return template 'acp_category_list', {
-    categories => [$categories],
+    categories => [$categories->all],
     };
 }
 get q{/acp/category/list} => require_role admin => \&get_acp_category_list_route;
