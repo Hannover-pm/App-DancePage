@@ -8,3 +8,4 @@ tmp*.html
 /sessions
 /views/cache
 *~
+/MyJenkins*
