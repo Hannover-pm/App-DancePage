@@ -1,1 +1,8 @@
-<p>Hallo World acp_page_list</p>
+      <h2 id="pagetitle">Admin Control Panel</h2>
+      <h3>Seitenverwaltung</h3>
+      <h4>Alle Seiten auflisten</h4>
+      <ul>
+|% for $pages -> $page {
+        <li><a href="/acp/page/<% $page.page_id %>"><% $page.subject %></a></li>
+|% }
+      </ul>

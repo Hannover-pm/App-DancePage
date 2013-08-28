@@ -1,1 +1,8 @@
-<p>Hallo World acp_tag_list</p>
+      <h2 id="pagetitle">Admin Control Panel</h2>
+      <h3>Tag-Verwaltung</h3>
+      <h4>Alle Tags auflisten</h4>
+      <ul>
+|% for $tags -> $tag {
+        <li><a href="/acp/tag/<% $tag.tag_id %>"><% $tag.tag %></a></li>
+|% }
+      </ul>
