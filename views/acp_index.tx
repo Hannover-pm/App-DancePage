@@ -4,12 +4,10 @@
         <li>
           <a href="/acp/user">Benutzerverwaltung</a>
           <br>
-          <small>Benutzer auflisten, anlegen, bearbeiten und löschen sowie Rollen verwalten.</small>
+          <small>Benutzer auflisten, anlegen, bearbeiten und löschen.</small>
           <ul>
             <li><a href="/acp/user/list">Alle Benutzer auflisten</a></li>
             <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
-            <li><a href="/acp/role/list">Alle Rollen auflisten</a></li>
-            <li><a href="/acp/role/create">Neue Rolle hinzufügen</a></li>
           </ul>
         </li>
         <li>
