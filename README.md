@@ -23,3 +23,5 @@ Dependencies
 * DBIx::Class::EncodedColumn
 * DBIx::Class::InflateColumn::DateTime
 * DBIx::Class::Candy
+* Text::Xslate::Bridge::MultiMarkdown
+* DBIx::Class::InflateColumn::Markup::Unified

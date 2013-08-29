@@ -119,6 +119,8 @@ engines:
     line_start: '|%'
     tag_start: '<%'
     tag_end: '%>'
+    module:
+      - Text::Xslate::Bridge::MultiMarkdown
 
 # Configure plugins.
 plugins:

@@ -6,7 +6,7 @@ use utf8;
 
 # Import other modules.
 use DBIx::Class::Candy (
-  -components => [qw( InflateColumn::DateTime )],
+  -components => [qw( InflateColumn::DateTime InflateColumn::Markup::Unified )],
 );
 
 ############################################################################
@@ -51,6 +51,8 @@ column abstract => {
 column message => {
   data_type   => 'text',
   is_nullable => 0,
+  is_markup   => 1,
+  markup_lang => 'markdown',
 };
 
 column publication_on => {
