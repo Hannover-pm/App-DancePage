@@ -5,6 +5,7 @@
         </header>
 |% markdown($page.message.unformatted, heading_ids => 0) | raw
         <footer>
+          <p>- <% $page.author.username %>, <% $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %></p>
           <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
         </footer>
       </article>
