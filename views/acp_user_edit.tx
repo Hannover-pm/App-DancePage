@@ -46,8 +46,15 @@
                 </td>
               </tr>
               <tr align="left" valign="top">
-                <th>Zugewiesene Rollen</th>
-                <td><% $_rset_all($user.roles, 'role').join(', ') %></td>
+                <th>Rollen</th>
+                <td>
+|% for $roles -> $role {
+                  <label style="display:block;">
+                    <input type="checkbox" name="roles" value="<% $role.role %>"<% if $user_has_role($user.username, $role.role) { ' checked' } %>>
+                    <% $role.role %>
+                  </label>
+|% }
+                </td>
               </tr>
               <tr align="left" valign="top">
                 <th></th>
@@ -58,5 +65,9 @@
               </tr>
             </tbody>
           </table>
+          <fieldset style="border: thick solid red;padding:1em;margin:1em 0">
+            <legend style="padding:0 .3em">Danger Area</legend>
+            <a href="<% $request.uri %>/delete">Benutzer <var><% $user.username %></var> permanent löschen</a>
+          </fieldset>
         </article>
       </form>

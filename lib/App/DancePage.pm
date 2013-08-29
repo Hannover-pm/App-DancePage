@@ -251,9 +251,11 @@ sub token_hook {
   # Register Dancer::Plugin::Auth::Extensible keywords.
   $tokens->{logged_in_user} = logged_in_user;
   $tokens->{user_has_role}  = sub {
-    my ($role) = @_;
-    return 0 unless logged_in_user;
-    return user_has_role($role) ? 1 : 0;
+    my ( $user, $role ) = @_;
+    $role = $user and $user = undef if !$role;
+    return 0 if !$user && !logged_in_user;
+    $user = logged_in_user->username if !$user;
+    return user_has_role( $user, $role ) ? 1 : 0;
   };
 
   $tokens->{_rset_all} = sub {
@@ -285,7 +287,10 @@ get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
 ############################################################################
 # Route handler: GET /acp/user/list
 sub get_acp_user_create_route {
-  return template 'acp_user_create';
+  my $roles = rset('Role');
+  return template 'acp_user_create', {
+    roles => [ $roles->all ],
+    };
 }
 get q{/acp/user/create} => require_role admin => \&get_acp_user_create_route;
 
@@ -298,6 +303,13 @@ sub post_acp_user_create_route {
     password  => params->{password},
     signup_on => DateTime->now,
   } );
+
+  my $roles = [];
+  foreach my $role ( @{ ref params->{roles} ? params->{roles} : [ params->{roles} ] } ) {
+    push @{$roles}, { role => $role };
+  }
+  $user->set_roles($roles);
+
   return redirect sprintf '/acp/user/%s', $user->user_id;
 }
 post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
@@ -306,9 +318,11 @@ post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
 # Route handler: GET /acp/user/list
 sub get_acp_user_edit_route {
   my $user = rset('User')->search( { user_id => params->{user_id} } )->first;
+  my $roles = rset('Role');
   return not_found_route() if !$user;
   return template 'acp_user_edit', {
-    user => $user,
+    user  => $user,
+    roles => [ $roles->all ],
     };
 }
 get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
@@ -318,12 +332,20 @@ get q{/acp/user/:user_id} => require_role admin => \&get_acp_user_edit_route;
 sub post_acp_user_edit_route {
   my $user = rset('User')->search( { user_id => params->{user_id} } )->first;
   return not_found_route() if !$user;
+
   $user->update( {
     username => params->{username},
     email    => params->{email},
     ( defined params->{has_failed_logins} ? ( has_failed_logins => params->{has_failed_logins} ) : () ),
     ( params->{password}                  ? ( password          => params->{password} )          : () ),
   } );
+
+  my $roles = [];
+  foreach my $role ( @{ ref params->{roles} ? params->{roles} : [ params->{roles} ] } ) {
+    push @{$roles}, { role => $role };
+  }
+  $user->set_roles($roles);
+
   return redirect sprintf '/acp/user/%s', params->{user_id};
 }
 post q{/acp/user/:user_id} => require_role admin => \&post_acp_user_edit_route;

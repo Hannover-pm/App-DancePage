@@ -1,1 +1,49 @@
-<p>Hallo World acp_user_create</p>
+      <form action="<% $request.uri %>" method="post">
+        <article>
+          <header>
+            <hgroup>
+              <h2 id="pagetitle">Admin Control Panel</h2>
+              <h3>Benutzerverwaltung</h3>
+              <h4>Neuen Benutzer anlegen</h4>
+            </hgroup>
+          </header>
+          <table border="1">
+            <colgroup>
+              <col width="150">
+              <col width="250">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>Benutzername</th>
+                <td><input type="text" name="username" required autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>E-Mail</th>
+                <td><input type="text" name="email" required autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Neues Passwort</th>
+                <td><input type="password" name="password" required autocomplete="off" style="width:98%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Rollen</th>
+                <td>
+|% for $roles -> $role {
+                  <label style="display:block;">
+                    <input type="checkbox" name="roles" value="<% $role.role %>">
+                    <% $role.role %>
+                  </label>
+|% }
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th></th>
+                <td>
+                  <input type="submit" value="Benutzerkonto erstellen">
+                  <input type="reset" value="Abbrechen">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </form>
