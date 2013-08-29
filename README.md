@@ -7,10 +7,10 @@ homepage system written in the [Perl programming language](http://perl.org/).
 TODO before first release
 -------------------------
 
-* Database design ( *in progress* )
-* DBIx::Class connectors ( *in progress* )
+* Database design ( *in review* )
+* DBIx::Class connectors ( *in review* )
 * Dynamic route handlers based on the database design ( *in progress* )
-* Administrative interface ( *todo* )
+* Administrative interface ( *in progress* )
 
 Dependencies
 ------------
