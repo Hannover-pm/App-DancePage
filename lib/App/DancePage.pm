@@ -110,7 +110,7 @@ sub setup {
         email     => 'user@localhost',
         password  => 'user',
         signup_on => DateTime->now,
-        userroles => [ { role => { role => 'admin' } } ],
+        userroles => [ { role => { role => 'pages_comment' } } ],
       } );
 
       # Register default categories.
