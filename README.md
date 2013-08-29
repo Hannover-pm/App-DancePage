@@ -25,3 +25,8 @@ Dependencies
 * DBIx::Class::Candy
 * Text::Xslate::Bridge::MultiMarkdown
 * DBIx::Class::InflateColumn::Markup::Unified
+
+Automated Testing
+-----------------
+
+http://ci.dev5media.de/job/App-DancePage/
