@@ -99,9 +99,16 @@ sub setup {
 
       # Register default administrative user.
       my $root_user = rset('User')->create( {
-        username  => 'root',
-        email     => 'root@localhost',
-        password  => '!',
+        username  => 'admin',
+        email     => 'admin@localhost',
+        password  => 'admin',
+        signup_on => DateTime->now,
+        userroles => [ { role => { role => 'admin' } } ],
+      } );
+      my $user_user = rset('User')->create( {
+        username  => 'user',
+        email     => 'user@localhost',
+        password  => 'user',
         signup_on => DateTime->now,
         userroles => [ { role => { role => 'admin' } } ],
       } );
@@ -149,8 +156,8 @@ sub setup {
           page_uri       => 'hello-world',
           pagetags       => [ { tag => { tag => 'Hello World', tag_uri => 'hello-world' } } ],
           comments       => [ {
-              author       => $root_user,
-              displayname  => 'root',
+              author       => $user_user,
+              displayname  => 'user',
               message      => 'This post rocks :)',
               commented_on => DateTime->now,
             },
