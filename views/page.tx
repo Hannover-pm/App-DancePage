@@ -9,6 +9,7 @@
           <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
         </footer>
       </article>
+|% if $page.comments.all {
       <section>
         <h3>Comments</h3>
 |% for $_rset_all($page.comments) -> $comment {
@@ -20,3 +21,4 @@
         </article>
 |% }
       </section>
+|% }
