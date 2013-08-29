@@ -30,3 +30,17 @@ Automated Testing
 -----------------
 
 http://ci.dev5media.de/job/App-DancePage/
+
+Sample database entries
+-----------------------
+
+By default App::DancePage is setting up the database schema with sample
+entries such as users and pages.
+
+Administrative user:
+* Username: admin
+* Password: admin
+
+Unprivileged user:
+* Username: user
+* Password: user
