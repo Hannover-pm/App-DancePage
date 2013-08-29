@@ -1,7 +1,21 @@
       <article>
-        <h2 id="pagetitle"><% $pagetitle %></h2>
-        <p><% $page.abstract %></p>
+        <header>
+          <h2 id="pagetitle"><% $pagetitle %></h2>
+          <p><% $page.abstract %></p>
+        </header>
 |% markdown($page.message.unformatted, heading_ids => 0) | raw
-
-        <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
+        <footer>
+          <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
+        </footer>
       </article>
+      <section>
+        <h3>Comments</h3>
+|% for $_rset_all($page.comments) -> $comment {
+        <article>
+          <p><% $comment.message %></p>
+          <footer>
+            - <% $comment.displayname %>, <% $comment.commented_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>
+          </footer>
+        </article>
+|% }
+      </section>
