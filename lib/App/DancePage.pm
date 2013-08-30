@@ -449,9 +449,11 @@ get q{/acp/page} => require_role admin => \&get_acp_page_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_list_route {
-  my $pages = rset('Page');
+  my $pages      = rset('Page');
+  my $categories = rset('Category');
   return template 'acp_page_list', {
-    pages => [ $pages->all ],
+    pages      => [ $pages->all ],
+    categories => [ $categories->all ],
     };
 }
 get q{/acp/page/list} => require_role admin => \&get_acp_page_list_route;
@@ -459,24 +461,57 @@ get q{/acp/page/list} => require_role admin => \&get_acp_page_list_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_create_route {
-  return template 'acp_page_create';
+  my $categories = rset('Category');
+  my $tags       = rset('Tag');
+  return template 'acp_page_create', {
+    categories => [ $categories->all ],
+    tags       => [ $tags->all ],
+    };
 }
 get q{/acp/page/create} => require_role admin => \&get_acp_page_create_route;
 
 ############################################################################
 # Route handler: POST /acp/page/list
 sub post_acp_page_create_route {
-  return redirect sprintf '/acp/page/%s', 'TODO';
+
+  my $page_uri = lc( params->{page_uri} || params->{subject} );
+  $page_uri =~ s/ß/ss/g;
+  $page_uri =~ s/[äÄ]/ae/g;
+  $page_uri =~ s/[öÖ]/oe/g;
+  $page_uri =~ s/[üÜ]/ue/g;
+  $page_uri =~ s/\s+/-/g;
+  $page_uri =~ s/[^a-z0-9\-]//g;
+  $page_uri =~ s/-+/-/g;
+
+  my $page = rset('Page')->create( {
+    subject        => params->{subject},
+    abstract       => params->{abstract},
+    message        => params->{message},
+    category_id    => ( params->{category} || $BLOG_CATEGORY_ID ),
+    author_id      => logged_in_user->user_id,
+    publication_on => DateTime->now,
+    page_uri       => $page_uri,
+  } );
+
+  $page->set_tags( [
+      map { $_ ? { tag_id => $_ } : () } @{ ( ref params->{tags} ? params->{tags} : [ params->{tags} ] ) }
+    ] );
+
+  return redirect sprintf '/acp/page/%s', $page->page_id;
 }
 post q{/acp/page/create} => require_role admin => \&post_acp_page_create_route;
 
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_edit_route {
-  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  my $page       = rset('Page')->search( { page_id => params->{page_id} } )->first;
+  my $categories = rset('Category');
+  my $tags       = rset('Tag');
   return not_found_route() if !$page;
   return template 'acp_page_edit', {
-    page => $page,
+    page       => $page,
+    categories => [ $categories->all ],
+    tags       => [ $tags->all ],
     };
 }
 get q{/acp/page/:page_id} => require_role admin => \&get_acp_page_edit_route;
@@ -484,8 +519,31 @@ get q{/acp/page/:page_id} => require_role admin => \&get_acp_page_edit_route;
 ############################################################################
 # Route handler: POST /acp/page/list
 sub post_acp_page_edit_route {
-  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->first;
   return not_found_route() if !$page;
+
+  my $page_uri = lc( params->{page_uri} || params->{subject} );
+  $page_uri =~ s/ß/ss/g;
+  $page_uri =~ s/[äÄ]/ae/g;
+  $page_uri =~ s/[öÖ]/oe/g;
+  $page_uri =~ s/[üÜ]/ue/g;
+  $page_uri =~ s/\s+/-/g;
+  $page_uri =~ s/[^a-z0-9\-]//g;
+  $page_uri =~ s/-+/-/g;
+
+  $page->update( {
+    subject      => params->{subject},
+    abstract     => params->{abstract},
+    message      => params->{message},
+    category_id  => ( params->{category} || $BLOG_CATEGORY_ID ),
+    last_edit_on => DateTime->now,
+    page_uri     => $page_uri,
+  } );
+
+  $page->set_tags( [
+      map { $_ ? { tag_id => $_ } : () } @{ ( ref params->{tags} ? params->{tags} : [ params->{tags} ] ) }
+    ] );
+
   return redirect sprintf '/acp/page/%s', params->{page_id};
 }
 post q{/acp/page/:page_id} => require_role admin => \&post_acp_page_edit_route;
@@ -493,7 +551,7 @@ post q{/acp/page/:page_id} => require_role admin => \&post_acp_page_edit_route;
 ############################################################################
 # Route handler: GET /acp/page/list
 sub get_acp_page_delete_route {
-  my $page = rset('Page')->search( { page_id => params->{page_id} } );
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->first;
   return not_found_route() if !$page;
   $page->delete;
   return redirect '/acp/page';

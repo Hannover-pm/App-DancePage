@@ -1,1 +1,91 @@
-<p>Hallo World acp_page_edit</p>
+      <h2 id="pagetitle">Admin Control Panel</h2>
+      <h3>Seitenverwaltung</h3>
+      <h4>Seite <var><% $page.subject %></var> bearbeiten</h4>
+      <form action="<% $request.uri %>" method="post">
+        <table border="1" width="100%">
+          <tbody>
+            <colgroup>
+              <col width="150">
+              <col>
+            </colgroup>
+            <tr align="left" valign="top">
+              <th>ID</th>
+              <td><% $page.page_id %></td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Erstellt von</th>
+              <td><% $page.author.username %></td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Veröffentlicht am</th>
+              <td><% if $page.publication_on { $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') } else { 'TBA' } %></td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Seitentitel</th>
+              <td><input type="text" name="subject" value="<% $page.subject %>" autocomplete="off" maxlength="80" required style="width:99%"></td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Zusammenfassung</th>
+              <td><input type="text" name="abstract" value="<% $page.abstract %>" autocomplete="off" maxlength="150" required style="width:99%"></td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Seiteninhalt</th>
+              <td>
+                <textarea name="message" id="acp_page_edit_message" rows="20" autocomplete="off" required style="width:99%;overflow:auto;visibility:hidden;position:absolute;"><% $page.message.unformatted %></textarea>
+                <div id="epiceditor"></div>
+                <script type="text/javascript" defer src="/scripts/epiceditor/epiceditor.min.js"></script>
+                <script type="text/javascript">
+                  $(document).ready(function(){
+                    var editor = new EpicEditor({
+                      basePath: '/scripts/epiceditor',
+                      textarea: 'acp_page_edit_message',
+                      button: { bar: "show" },
+                      autogrow: true
+                    }).load();
+                  });
+                </script>
+              </td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Tags</th>
+              <td>
+|% for $tags -> $tag {
+                <label style="display:block;">
+                  <input type="checkbox" name="tags" value="<% $tag.tag_id %>"<% if $page.tags.search({'me.tag_id'=>$tag.tag_id}).all { ' checked' } %>>
+                  <% $tag.tag %>
+                </label>
+|% }
+                <a href="/acp/tag/create">Neuen Tag hinzufügen</a>
+              </td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>Kategorie</th>
+              <td>
+|% for $categories -> $category {
+                <label style="display:block;">
+                  <input type="radio" name="category" value="<% $category.category_id %>"<% if $category.category_id == $page.category_id { ' checked' } %>>
+                  <% $category.category %>
+                </label>
+|% }
+              </td>
+            </tr>
+            <tr align="left" valign="top">
+              <th>URL</th>
+              <td><% if $page.category.category_uri { '/'; $page.category.category_uri } %>/<input type="text" name="page_uri" value="<% $page.page_uri %>" autocomplete="off" required/></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr align="left" valign="top">
+              <th></th>
+              <td>
+                <input type="submit" value="Speichern">
+                <input type="reset" value="Abbrechen">
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </form>
+      <fieldset style="border: thick solid red;padding:1em;margin:1em 0">
+        <legend style="padding:0 .3em">Danger Area</legend>
+        <a href="<% $request.uri %>/delete">Seite <var><% $page.subject %></var> permanent löschen</a>
+      </fieldset>

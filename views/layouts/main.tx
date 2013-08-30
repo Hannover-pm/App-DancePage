@@ -19,14 +19,16 @@
     <link rel="stylesheet" type="text/css" href="styles/main.css">
   </head>
   <body>
+    <script type="text/javascript" src="scripts/jquery.js"></script>
+    <!-- <script type="text/javascript" src="scripts/jquery-migrate.js"></script> -->
     <header id="header" role="banner">
       <h1 id="sitename"><a href="<% $request.uri_base %>"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></a></h1>
       <nav id="topnav">
         <ul class="topnav">
           <li><a href="/">Home</a></li>
-          <li><a href="/about-me">About me</a></li>
+          <li><a href="/ueber-uns">Über uns</a></li>
           <li><a href="/blog">Blog</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="/kontakt">Kontakt</a></li>
 |% if $user_has_role('admin') {
           <li><a href="/acp">ACP</a></li>
 |% }
@@ -46,8 +48,6 @@
       <span id="copyright">© <% $now.year %>, <a href="<% $request.uri_base %>/"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></a>. All rights reserved.</span>
       <span id="poweredby">Powered by <a href="http://www.perl.org/" title="Perl programming language">Perl</a> <a href="http://perldancer.org/" title="Perl Dancer Web Framework">Dancer</a>.</span>
     </footer>
-    <script type="text/javascript" defer src="scripts/jquery.js"></script>
-    <!-- <script type="text/javascript" defer src="scripts/jquery-migrate.js"></script> -->
     <script type="text/javascript" defer src="scripts/main.js"></script>
   </body>
 </html>

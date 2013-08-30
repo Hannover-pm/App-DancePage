@@ -1,8 +1,28 @@
       <h2 id="pagetitle">Admin Control Panel</h2>
       <h3>Seitenverwaltung</h3>
       <h4>Alle Seiten auflisten</h4>
-      <ul>
-|% for $pages -> $page {
-        <li><a href="/acp/page/<% $page.page_id %>"><% $page.subject %></a></li>
+      <table border="1">
+        <thead>
+          <tr align="left" valign="top">
+            <th align="right">ID</th>
+            <th>Seitentitel</th>
+            <th>Erstellt von</th>
+            <th>Veröffentlicht am</th>
+          </tr>
+        </thead>
+        <tbody>
+|% for $categories -> $category {
+          <tr align="left" valign="top">
+            <td colspan="3"><% $category.category %></td>
+          </tr>
+|% for $_rset_all($category.pages.search({}, { 'order_by' => [ { '-desc' => 'page_id' } ] })) -> $page {
+          <tr align="left" valign="top">
+            <td align="right"><a href="/acp/page/<% $page.page_id %>"><% $page.page_id %></a></td>
+            <td><a href="/acp/page/<% $page.page_id %>"><% $page.subject %></a></td>
+            <td><% $page.author.username %></td>
+            <td><% if $page.publication_on { $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') } else { 'TBA' } %></td>
+          </tr>
 |% }
-      </ul>
+|% }
+        </tbody>
+      </table>
