@@ -4,21 +4,23 @@ use strict;
 use warnings FATAL => 'all';
 use utf8;
 
-# Import other modules.
 use DBIx::Class::Candy (
-  -components => [qw( InflateColumn::DateTime )],
+  -components => [qw( Core )],
 );
 
 ############################################################################
-# Table definitions:
-table 'Roles';
+# Table definition.
+
+table 'roles';
 
 ############################################################################
-# Column definitions:
+# Field definition.
+
 primary_column role_id => {
   data_type         => 'integer',
-  is_auto_increment => 1,
   is_nullable       => 0,
+  is_auto_increment => 1,
+  is_numeric        => 1,
   extra             => { unsigned => 1 },
 };
 
@@ -28,23 +30,22 @@ column role => {
   is_nullable => 0,
 };
 
-############################################################################
-# Index definitions:
-unique_constraint Roles_role => [qw( role )];
+#########################################################################
+# Index definition.
+
+unique_constraint roles_idx_role => [qw( role )];
 
 sub sqlt_deploy_hook {
   my ( $self, $sqlt_table ) = @_;
-  return;
+  return $sqlt_table;
 }
 
-############################################################################
-# Relationship definitions:
-has_many roleusers => 'App::DancePage::Schema::Result::UserRole', {
-  'foreign.role_id' => 'self.role_id',
-  },
-  { cascade_copy => 0, cascade_delete => 0 };
-many_to_many users => 'roleusers', 'roleusers', { cascade_copy => 0, cascade_delete => 0 };
+#########################################################################
+# Relation definition.
 
-############################################################################
-# Don't forget to return a true value from the file.
+has_many roleusers => 'App::DancePage::Schema::Result::UserRole', 'role_id',
+  { cascade_copy => 0, cascade_delete => 0 };
+many_to_many users => 'roleusers', 'role', { cascade_copy => 0, cascade_delete => 0 };
+
+#########################################################################
 1;

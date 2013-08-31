@@ -1,53 +1,86 @@
 <!DOCTYPE HTML>
-<html lang="<% $content_language %>">
+<html>
   <head>
-    <base href="<% $request.uri_base %>" target="_top">
     <meta http-equiv="content-type" content="<% $content_type %>; charset=<% $content_charset %>">
-    <script type="text/javascript" src="scripts/modernizr.js"></script>
+    <base href="<% $request.uri_base %>/" target="_top">
+    <script type="text/javascript" src="/scripts/modernizr.js"></script>
     <meta charset="<% $content_charset %>">
-    <title><% if $settings.sitename { $settings.sitename } else { $settings.appname } %><% if $pagecategory { ' '; $pagecategory } %><% if $pagetitle { ': '; $pagetitle } %></title>
-|% if $pageabstract {
-    <meta name="description" content="<% $pageabstract %>">
-|% } if $pagekeywords && $pagekeywords.size() {
-    <meta name="keywords" content="<% $pagekeywords.join(',') %>">
-|% } if $pageauthor {
-    <meta name="author" content="<% $pageauthor %>">
-|% }
+    <title><% if $settings.sitename { $settings.sitename } else { $settings.appname } %><% if $pagecategory { ' '; $pagecategory } %><% if $pagesubject { ': '; $pagesubject } %></title>
+    <meta name="description" content="<% if $pageabstract { $pageabstract } %>">
+    <meta name="keywords" content="<% if $pagekeywords && $pagekeywords.size { $pagekeywords.join(',') } %>">
+    <meta name="author" content="<% if $pageauthor { $pageauthor } %>">
     <meta name="application-name" content="<% $settings.appname %>">
-    <meta name="robots" content="<% if $pagerobots { $pagerobots } else { 'index,follow' } %>">
-    <link rel="stylesheet" type="text/css" href="styles/normalize.css">
-    <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <meta name="robots" content="<% $robots %>">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/styles/main.css">
   </head>
   <body>
-    <script type="text/javascript" src="scripts/jquery.js"></script>
-    <!-- <script type="text/javascript" src="scripts/jquery-migrate.js"></script> -->
     <header id="header" role="banner">
-      <h1 id="sitename"><a href="<% $request.uri_base %>"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></a></h1>
       <nav id="topnav">
         <ul class="topnav">
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Start</a></li>
           <li><a href="/ueber-uns">Über uns</a></li>
           <li><a href="/blog">Blog</a></li>
+          <li><a href="/treffen">Treffen</a></li>
           <li><a href="/kontakt">Kontakt</a></li>
+|% if $logged_in_user {
 |% if $user_has_role('admin') {
           <li><a href="/acp">ACP</a></li>
 |% }
-|% if $logged_in_user {
-          <li><a href="/logout2">Logout</a></li>
+          <li><a href="/logout<% if $settings.auth_route_fix { '2' } %>">Logout</a></li>
 |% } else {
-          <li><a href="/login2">Login</a></li>
-|% }
+          <li><a href="/login<% if $settings.auth_route_fix { '2' } %>">Login</a></li>
+|% if !$settings.disable_register {
+          <li><a href="/register">Registrierung</a></li>
+|% } }
         </ul>
         <div id="topnav_clearing"></div>
       </nav>
+      <h1 id="sitename"><a href="/"><% $settings.sitename %></a></h1>
+|% if $settings.siteslogan {
+      <p id="siteslogan"><% $settings.siteslogan %></p>
+|% }
     </header>
     <div id="main">
+      <div id="breadcrumb">
+        <span>Sie sind hier: </span>
+        <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <a href="<% $request.uri_base %>/" itemprop="url"><span itemprop="title"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></span></a>
+        </span>
+|% if $page && $page.category.category_uri {
+        <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <span> › </span>
+          <a href="<% $request.uri_base %>/<% $page.category.category_uri %>" itemprop="url"><span itemprop="title"><% $page.category.category %></a>
+        </span>
+        <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <span> › </span>
+          <a href="<% $request.uri_base %>/<% $page.category.category_uri %>/<% $page.page_uri %>" itemprop="url"><span itemprop="title"><% $page.subject %></span></a>
+        </span>
+|% } elsif $page {
+        <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <span> › </span>
+          <a href="<% $request.uri_base %>/<% $page.page_uri %>" itemprop="url"><span itemprop="title"><% $page.subject %></span></a>
+        </span>
+|% } elsif $category {
+        <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+          <span> › </span>
+          <a href="<% $request.uri_base %>/<% $category.category_uri %>" itemprop="url"><span itemprop="title"><% $category.category %></span></a>
+        </span>
+|% }
+      </div>
 |% $content | raw
     </div>
-    <footer id="footer" role="contentinfo" lang="en">
-      <span id="copyright">© <% $now.year %>, <a href="<% $request.uri_base %>/"><% if $settings.sitename { $settings.sitename } else { $settings.appname } %></a>. All rights reserved.</span>
-      <span id="poweredby">Powered by <a href="http://www.perl.org/" title="Perl programming language">Perl</a> <a href="http://perldancer.org/" title="Perl Dancer Web Framework">Dancer</a>.</span>
+    <footer id="footer" role="contentinfo">
+      <span>(c) 2013, Hannover.pm. All rights reserved.</span>
     </footer>
-    <script type="text/javascript" defer src="scripts/main.js"></script>
+    <script type="text/javascript">
+    <!--
+      var request = new Object({ uri_base: '<% $request.uri_base %>', uri: '<% $request.uri %>', referer: '<% if $request.referer { $request.referer } %>' });
+    //-->
+    </script>
+    <script type="text/javascript" defer="defer" src="/scripts/jquery.js"></script>
+    <!-- <script type="text/javascript" defer="defer" src="/scripts/jquery-migrate.js"></script> -->
+    <script type="text/javascript" defer="defer" src="/scripts/main.js"></script>
   </body>
 </html>

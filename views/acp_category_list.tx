@@ -1,8 +1,0 @@
-      <h2 id="pagetitle">Admin Control Panel</h2>
-      <h3>Kategorieverwaltung</h3>
-      <h4>Alle Tags auflisten</h4>
-      <ul>
-|% for $categories -> $category {
-        <li><a href="/acp/category/<% $category.category_id %>"><% $category.category %></a></li>
-|% }
-      </ul>

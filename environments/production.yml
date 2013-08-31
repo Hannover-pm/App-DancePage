@@ -11,9 +11,9 @@ port: 5000
 behind_proxy: 1
 
 # the logger engine to use
-logger: file
+logger: "file"
 
 # the log level for this environment
 # core is the lowest, it shows Dancer's core log messages as well as yours
 # (debug, info, warning and error)
-log: warning
+log: "warning"

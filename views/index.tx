@@ -1,2 +1,57 @@
-      <h2 id="pagetitle">Welcome to <% if $settings.sitename { $settings.sitename } else { $settings.appname } %></h2>
-      <p>You will find my content here shortly!</p>
+      <section role="main">
+        <article itemscope="itemscope" itemtype="http://schema.org/Article">
+          <header>
+            <h2 id="pagesubject" itemprop="name">Willkommen auf Hannover.pm</h2>
+          </header>
+          <p itemprop="articleBody">
+            Dies ist die Homepage der Anwendergruppe von Perl aus Hannover,
+            Deutschland. Anwendergruppen für Perl, auch Perl User Groups,
+            werden "Perl Mongers" genannt. Wenn Sie uns noch nicht kennen,
+            möchten Sie eventuell etwas
+            <a href="/ueber-uns">über Hannover.pm und die Perl Mongers</a>
+            erfahren.
+          </p>
+          <footer>
+            <meta itemprop="dateCreated" content="2013-08-31T17:29:00+0200">
+          </footer>
+        </article>
+        <section id="current_meetings" class="columns2">
+          <h2 itemprop="name">Aktuellste Treffen</h2>
+          <ul class="current_meetings">
+|% for $current_meetings -> $meeting {
+            <li>
+              <a href="/<% $meeting.category.category_uri %>/<% $meeting.page_uri %>"><% $meeting.subject %></a>
+              <br>
+              <small><time datetime="<% $meeting.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>"><% if $meeting.publication_on.year == $now.year { $meeting.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B, %k:%M Uhr') } else { $meeting.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') } %></time></small>
+            </li>
+|% }
+            <li><a href="/<% $meetings_category.category_uri %>">Alle Treffen auflisten</a></li>
+          </ul>
+        </section>
+        <section id="latest_blogposts" class="columns2">
+          <h2 itemprop="name">Neueste Blogeinträge</h2>
+          <ul class="latest_blogposts">
+|% for $latest_blogposts -> $blogpost {
+            <li itemscope="itemscope" itemtype="http://schema.org/Article">
+              <meta itemprop="url" content="<% $request.uri_base %>/<% $blogpost.category.category_uri %>/<% $blogpost.page_uri %>">
+              <meta itemprop="name" content="<% $blogpost.subject %>">
+              <a href="/<% $blogpost.category.category_uri %>/<% $blogpost.page_uri %>"><% $blogpost.subject %></a>
+              <br>
+              <span itemprop="description"><% $blogpost.abstract %></span>
+              <br>
+              <small>
+                <time itemprop="datePublished" datetime="<% $blogpost.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>"><% if $blogpost.publication_on.year == $now.year { $blogpost.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B, %k:%M Uhr') } else { $blogpost.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') } %></time>
+                <span> von </span>
+                <span itemprop="author">
+                  <span itemscope="itemscope" itemtype="http://schema.org/Person">
+                    <span itemprop="name"><% $blogpost.author.username %></span>
+                  </span>
+                </span>
+              </small>
+            </li>
+|% }
+            <li><a href="/<% $blog_category.category_uri %>">Alle Blogbeiträge auflisten</a></li>
+          </ul>
+        </section>
+        <div class="columns2_clearing"></div>
+      </section>

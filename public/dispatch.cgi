@@ -1,14 +1,13 @@
 #!/usr/bin/env perl
 # COPYRIGHT
-## no critic (RequireCarp)
 use strict;
 use warnings FATAL => 'all';
 use utf8;
 
-# Import other modules.
-use Dancer        (':syntax');
-use FindBin       ('$RealBin');  ## no critic (RequireInterpolationOfMetach)
-use Plack::Runner ('path');
+# Use other modules.
+use Dancer qw( :syntax );
+use FindBin qw( $RealBin );
+use Plack::Runner qw( path );
 
 ############################################################################
 # For some reason Apache SetEnv directives dont propagate correctly to the
@@ -17,9 +16,10 @@ set apphandler  => 'PSGI';
 set environment => 'production';
 
 ############################################################################
-my $psgi = path( $RealBin, qw( .. bin app.pl ) );
-die "Unable to read startup script '$psgi': File is readable by effective uid/gid"
+# Find and prepare bootstrapper.
+my $psgi = path( $RealBin, '..', 'bin', 'app.pl' );
+die "Unable to read startup script '$psgi': file is not readable by effective uid/gid"
   unless -r $psgi;
 
-# Execute App::DancePage. NO FURTHER CODE THAN `run`!
+# Launch App::DancePage. NO FURTHER CODE THAN `run;`!
 Plack::Runner->run($psgi);

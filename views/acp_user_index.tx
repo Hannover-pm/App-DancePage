@@ -1,8 +1,0 @@
-      <h2 id="pagetitle">Admin Control Panel</h2>
-      <h3>Benutzerverwaltung</h3>
-      <p>Benutzer auflisten, anlegen, bearbeiten und löschen.</p>
-      <p>Bitte eine der folgenden Funktionen auswählen:</p>
-      <ul>
-        <li><a href="/acp/user/list">Alle Benutzer auflisten</a></li>
-        <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
-      </ul>

@@ -4,48 +4,51 @@ use strict;
 use warnings FATAL => 'all';
 use utf8;
 
-# Import other modules.
-use DBIx::Class::Candy;
+use DBIx::Class::Candy (
+  -components => [qw( Core )],
+);
 
 ############################################################################
-# Table definitions:
-table 'User_Roles';
+# Table definition.
+
+table 'user_roles';
 
 ############################################################################
-# Column definitions:
+# Field definition.
+
 primary_column user_id => {
   data_type         => 'integer',
-  is_auto_increment => 1,
   is_nullable       => 0,
-  extra             => { unsigned => 1 },
+  is_auto_increment => 1,
+  is_numeric        => 1,
   is_foreign_key    => 1,
+  extra             => { unsigned => 1 },
 };
 
 primary_column role_id => {
   data_type         => 'integer',
-  is_auto_increment => 1,
   is_nullable       => 0,
-  extra             => { unsigned => 1 },
+  is_auto_increment => 1,
+  is_numeric        => 1,
   is_foreign_key    => 1,
+  extra             => { unsigned => 1 },
 };
 
-############################################################################
-# Index definitions:
+#########################################################################
+# Index definition.
+
 sub sqlt_deploy_hook {
   my ( $self, $sqlt_table ) = @_;
-
-  $sqlt_table->add_index( name => 'User_Roles_role_id', fields => [qw( role_id )] );
-
-  return;
+  return $sqlt_table;
 }
 
-############################################################################
-# Relationship definitions:
+#########################################################################
+# Relation definition.
+
 belongs_to user => 'App::DancePage::Schema::Result::User', 'user_id',
   { is_deferrable => 1, on_delete => 'RESTRICT', on_update => 'CASCADE' };
 belongs_to role => 'App::DancePage::Schema::Result::Role', 'role_id',
   { is_deferrable => 1, on_delete => 'RESTRICT', on_update => 'CASCADE' };
 
-############################################################################
-# Don't forget to return a true value from the file.
+#########################################################################
 1;

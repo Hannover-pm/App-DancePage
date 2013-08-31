@@ -4,17 +4,19 @@ use strict;
 use warnings FATAL => 'all';
 use utf8;
 
-# Import other modules.
-use DBIx::Class::Candy;
+use DBIx::Class::Candy (
+  -components => [qw( Core )],
+);
 
 ############################################################################
-# Table definitions:
-table 'DbInfo';
+# Table definition.
+
+table 'dbinfo';
 
 ############################################################################
-# Column definitions:
+# Field definition.
+
 primary_column property => {
-  data_type   => 'integer',
   data_type   => 'varchar',
   size        => 255,
   is_nullable => 0,
@@ -26,16 +28,13 @@ column value => {
   is_nullable => 1,
 };
 
-############################################################################
-# Index definitions:
+#########################################################################
+# Index definition.
+
 sub sqlt_deploy_hook {
   my ( $self, $sqlt_table ) = @_;
-  return;
+  return $sqlt_table;
 }
 
-############################################################################
-# Relationship definitions:
-
-############################################################################
-# Don't forget to return a true value from the file.
+#########################################################################
 1;

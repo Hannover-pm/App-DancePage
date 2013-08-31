@@ -1,7 +1,28 @@
-      <h2 id="pagetitle"><% $category.category %></h2>
-      <p><% $category.abstract %></p>
-      <ul>
-|% for $pages -> $page {
-        <li><a href="<% $category.category_uri %>/<% $page.page_uri %>"><% $page.subject %></a></li>
+      <section role="main">
+        <article>
+          <header>
+            <h2 id="pagesubject" itemprop="name"><% $category.category %></h2>
+            <p id="pageabstract" itemprop="description"><% $category.abstract %></p>
+          </header>
+          <ul class="category_pages">
+|% for $category_pages -> $page {
+            <li itemscope="itemscope" itemtype="http://schema.org/Article">
+              <meta itemprop="url" content="<% $request.uri_base %>/<% $page.category.category_uri %>/<% $page.page_uri %>">
+              <meta itemprop="name" content="<% $page.subject %>">
+              <a href="/<% $page.category.category_uri %>/<% $page.page_uri %>"><% $page.subject %></a>
+              <br>
+              <span itemprop="description"><% $page.abstract %></span>
+              <br>
+              <small>
+                <time itemprop="datePublished" datetime="<% $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>"><% if $page.publication_on.year == $now.year { $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B, %k:%M Uhr') } else { $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') } %></time>
+                <span> von </span>
+                <span itemprop="author">
+                  <span itemscope="itemscope" itemtype="http://schema.org/Person">
+                    <span itemprop="name"><% $page.author.username %></span>
+                  </span>
+                </span>
+              </small>
+            </li>
 |% }
-      </ul>
+          </ul>
+      </section>

@@ -1,0 +1,10 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject"><% $pagesubject %></h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <p>
+          <strong>Vielen Dank für Ihre Registrierung!</strong>
+          <span> Ihr Benutzerkonto wurde erfolgreich freigeschaltet. Sie können nun Beiträge kommentieren.</span>
+        </p>
+      </section>

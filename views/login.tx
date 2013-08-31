@@ -1,15 +1,32 @@
-      <h2 id="pagetitle"><% $pagetitle %></h2>
+      <section role="main">
+        <header>
+          <h2 id="pagesubject"><% $pagesubject %></h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
 |% if $login_failed {
-      <p>Login failed <% $login_failed %> times.</p>
-|% }
-      <form action="/login2" method="post" id="login_form">
-|% if $return_url {
-        <input type="hidden" name="return_url" value="<% $return_url %>">
-|% }
         <p>
-          <input type="text" id="login_username" name="username" placeholder="Your username or email" required autocomplete="off" autofocus>
-          <input type="password" id="login_password" name="password" placeholder="Your password" required autocomplete="off">
-          <input type="submit" id="login_submit" value="Login">
-          <input type="reset" id="login_reset" value="Reset">
+          <strong>Achtung:</strong>
+          <span> Die Kombination aus Benutzername und Benutzerpassword konnte nicht gefunden werden.</span>
         </p>
-      </form>
+|% }
+        <form name="login" action="/login<% if $settings.auth_route_fix { '2' } %>" method="post">
+|% if $return_url {
+          <input type="hidden" name="return_url" value="<% $return_url %>">
+|% }
+          <p>
+            <label>
+              <span>Benutzername: </span>
+              <input type="text" id="login_username" name="username" required="required" autocomplete="on" autofocus="autofocus" placeholder="Ihr Benutzername">
+            </label>
+          </p>
+          <p>
+            <label>
+              <span>Passwort: </span>
+              <input type="password" id="login_password" name="password" required="required" autocomplete="on" placeholder="Ihr Benutzerpasswort">
+            </label>
+          </p>
+          <p>
+            <input type="submit" id="login_submit" value="Login">
+          </p>
+        </form>
+      </section>

@@ -1,5 +1,11 @@
 # configuration file for development environment
 
+# The IP address that the Dancer app should bind to.
+server: 127.0.0.1
+
+# The port Dancer will listen to.
+port: 3000
+
 # If set to true, runs the standalone webserver in the background.
 daemon: 0
 
@@ -8,12 +14,12 @@ daemon: 0
 behind_proxy: 0
 
 # the logger engine to use
-logger: console
+logger: "console"
 
 # the log level for this environment
 # core is the lowest, it shows Dancer's core log messages as well as yours
 # (debug, info, warning and error)
-log: core
+log: "core"
 
 # If true, use warnings will be in effect for all modules and scripts loaded
 # by your Dancer application.
@@ -39,4 +45,4 @@ traces: 1
 server_tokens: 1
 
 # Which session engine should be used.
-session: Simple
+session: "Simple"

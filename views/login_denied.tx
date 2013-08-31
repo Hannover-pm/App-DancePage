@@ -1,0 +1,6 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject"><% $pagesubject %></h2>
+        </header>
+        <p id="pageabstract"><% $pageabstract %></p>
+      </section>

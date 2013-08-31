@@ -4,9 +4,9 @@ use strict;
 use warnings FATAL => 'all';
 use utf8;
 
-# Import other modules.
+# Use other modules.
 use Dancer;
-use App::DancePage;
+require App::DancePage;
 
-# Execute App::DancePage. NO FURTHER CODE THAN `dance`!
+# Launch App::DancePage. NO FURTHER CODE THAN `dance;`!
 dance;

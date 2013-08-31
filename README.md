@@ -2,45 +2,47 @@ App::DancePage
 ==============
 
 App::DancePage is a [Perl Dancer](http://perldancer.org/) powered personal
-homepage system written in the [Perl programming language](http://perl.org/).
+homepage system written in the
+[Perl programming language](http://www.perl.org/).
 
-TODO before first release
--------------------------
-
-* Database design ( *in review* )
-* DBIx::Class connectors ( *in review* )
-* Dynamic route handlers based on the database design ( *in progress* )
-* Administrative interface ( *in progress* )
-
-Dependencies
+Requirements
 ------------
 
-* Test::NoWarnings
-* Dancer::Template::Xslate
-* Dancer::Plugin::DBIC
-* Dancer::Plugin::Auth::Extensible
-* Const::Fast
-* DBIx::Class::EncodedColumn
-* DBIx::Class::InflateColumn::DateTime
-* DBIx::Class::Candy
-* Text::Xslate::Bridge::MultiMarkdown
-* DBIx::Class::InflateColumn::Markup::Unified
+A Perl version of 5.10 (5.010) or above is required to run App::DancePage.
 
-Automated Testing
------------------
+The following Perl modules are required:
 
-http://ci.dev5media.de/job/App-DancePage/
+* [Const::Fast](http://p3rl.org/Const::Fast)
+* [Dancer](http://p3rl.org/Dancer)
+* [Dancer::Template::Xslate](http://p3rl.org/Dancer::Template::Xslate)
+* [Dancer::Plugin::Auth::Extensible](http://p3rl.org/Dancer::Plugin::Auth::Extensible)
+* [Dancer::Plugin::Auth::Extensible::Provider::DBIC](http://p3rl.org/Dancer::Plugin::Auth::Extensible)
+* [Dancer::Plugin::DBIC](http://p3rl.org/Dancer::Plugin::DBIC)
+* [DBIx::Class::Candy](http://p3rl.org/DBIx::Class::Candy)
+* [DBIx::Class::InflateColumn::DateTime](http://p3rl.org/DBIx::Class::InflateColumn::DateTime)
+* [DBIx::Class::EncodedColumn](http://p3rl.org/DBIx::Class::EncodedColumn)
+* [DBIx::Class::InflateColumn::Markup::Unified](http://p3rl.org/DBIx::Class::InflateColumn::Markup::Unified)
+* [DateTime::Format::SQLite](http://p3rl.org/DateTime::Format::SQLite)
+* [Text::Xslate::Bridge::MultiMarkdown](http://p3rl.org/Text::Xslate::Bridge::MultiMarkdown)
+* [YAML](http://p3rl.org/YAML)
 
-Sample database entries
------------------------
+For testing purposes additionally:
 
-By default App::DancePage is setting up the database schema with sample
-entries such as users and pages.
+* [Test::More](http://p3rl.org/Test::More)
+* [Test::NoWarnings](http://p3rl.org/Test::NoWarnings)
 
-Administrative user:
-* Username: admin
-* Password: admin
+Security checks performed for every route request
+-------------------------------------------------
 
-Unprivileged user:
-* Username: user
-* Password: user
+There are currently 3 checks to prevent session stealing and CSRF:
+
+* void session when user agent is switching
+* void session when remove address is switching
+* flag request when possible CSRF attack was detected
+
+Copyright and license
+---------------------
+
+This software is copyright (c) 2013 by BURNERSK.
+ 
+All rights reserved.

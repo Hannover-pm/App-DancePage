@@ -1,8 +1,0 @@
-      <h2 id="pagetitle">Admin Control Panel</h2>
-      <h3>Seitenverwaltung</h3>
-      <p>Seiten auflisten, anlegen, bearbeiten und löschen sowie Seitenkommenare verwalten.</p>
-      <p>Bitte eine der folgenden Funktionen auswählen:</p>
-      <ul>
-        <li><a href="/acp/page/list">Alle Seiten auflisten</a></li>
-        <li><a href="/acp/page/create">Neue Seite anlegen</a></li>
-      </ul>

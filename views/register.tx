@@ -1,0 +1,35 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject"><% $pagesubject %></h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="register" action="/register" method="post">
+          <p>
+            <label>
+              <span>Benutzername: </span>
+              <input type="text" id="register_username" name="username" required="required" autocomplete="off" autofocus="autofocus" placeholder="Ihr Benutzername">
+            </label>
+          </p>
+          <p>
+            <label>
+              <span>Passwort: </span>
+              <input type="password" id="register_password" name="password" required="required" autocomplete="off" placeholder="Ihr Benutzerpasswort">
+            </label>
+          </p>
+          <p>
+            <label>
+              <span>Passwort wiederholen: </span>
+              <input type="password" id="register_password_repeat" name="password_repeat" required="required" autocomplete="off" placeholder="Ihr Benutzerpasswort">
+            </label>
+          </p>
+          <p>
+            <label>
+              <span>E-Mail Adresse: </span>
+              <input type="text" id="register_email" name="email" required="required" autocomplete="off" autofocus="autofocus" placeholder="Ihre E-Mail Adresse">
+            </label>
+          </p>
+          <p>
+            <input type="submit" id="login_submit" value="Login">
+          </p>
+        </form>
+      </section>

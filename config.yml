@@ -1,14 +1,15 @@
 # Your site's name.
-sitename: My DancePage
+sitename: "Hannover.pm"
+siteslogan: "Perl Mongers - Perl user group Hanover, Deutschland"
 
 # Application's name.
-appname: App::DancePage
+appname: "App::DancePage"
 
 # The IP address that the Dancer app should bind to.
 server: 0.0.0.0
 
 # The port Dancer will listen to.
-port: 3000
+port: 80
 
 # If set to true, runs the standalone webserver in the background.
 daemon: 0
@@ -18,23 +19,20 @@ daemon: 0
 behind_proxy: 0
 
 # The default content type of outgoing content.
-content_type: text/html
+content_type: "text/html"
 
 # Sets the default charset of outgoing content.
-charset: UTF-8
-
-# Sets the default language of outgoing content.
-language: en
+charset: "UTF-8"
 
 # Sets the default charset of files with unknown extensions within the
 # public folder.
-default_mime_type: application/data
+default_mime_type: "application/data"
 
 # Which template engine should be used.
-template: xslate
+template: "xslate"
 
 # The name of the layout to use when rendering view.
-layout: main
+layout: "main"
 
 # If true, config will return an object instead of a hash reference.
 strict_config: 0
@@ -64,20 +62,20 @@ server_tokens: 1
 
 # This setting lets you specify a template to be used in case of runtime
 # error.
-#error_template: error
+#error_template: "error"
 
 # If set to true, Dancer will reload the route handlers whenever the file
 # where they are defined is changed.
 auto_reload: 0
 
 # Which session engine should be used.
-session: YAML
+session: "YAML"
 
 # The session expiry time in seconds, or as e.g. "2 hours".
-session_expires: 2 hours
+session_expires: "2 hours"
 
 # The name of the cookie to store the session ID in.
-session_name: sid
+session_name: "sid"
 
 # If the session_secure setting is set to a true value, the cookie will be
 # marked as secure, meaning it should only be sent over HTTPS connections.
@@ -90,9 +88,9 @@ session_is_http_only: 0
 
 # Allows you to set the domain property on the cookie, which will override
 # the default.
-#session_domain: .example.com
+#session_domain: ".example.com"
 
-# For simple pages where you're not doing anything dynamic, but still want
+# For simple pages where you"re not doing anything dynamic, but still want
 # to use the template engine to provide headers etc, you can use the
 # auto_page feature to avoid the need to create a route for each page.
 auto_page: 0
@@ -110,15 +108,15 @@ route_cache_path_limit: 100
 engines:
   xslate:
     cache: 1
-    cache_dir: views/cache
-    input_layer: ':utf8'
+    cache_dir: "views/cache"
+    input_layer: ":utf8"
     verbose: 0
-    extension: tx
-    syntax: Kolon
-    type: html
-    line_start: '|%'
-    tag_start: '<%'
-    tag_end: '%>'
+    extension: "tx"
+    syntax: "Kolon"
+    type: "html"
+    line_start: "|%"
+    tag_start: "<%"
+    tag_end: "%>"
     module:
       - Text::Xslate::Bridge::MultiMarkdown
 
@@ -132,32 +130,26 @@ plugins:
         RaiseError: 1
         sqlite_allow_multiple_statements: 1
         sqlite_unicode: 1
-    unittest:
-      dsn: dbi:SQLite:dbname=dancepage-unittest.db
-      schema_class: App::DancePage::Schema
-      options:
-        RaiseError: 1
-        sqlite_allow_multiple_statements: 1
-        sqlite_unicode: 1
-    development:
-      dsn: dbi:SQLite:dbname=dancepage-development.db
-      schema_class: App::DancePage::Schema
-      options:
-        RaiseError: 1
-        sqlite_allow_multiple_statements: 1
-        sqlite_unicode: 1
   Auth::Extensible:
     no_default_pages: 1
     disable_roles: 0
     login_page: /login
     logout_page: /logout
-    denied_page: /access-denied
+    denied_page: /login/denied
     realms:
       users:
         provider: DBIC
         db_connection_name: default
         users_resultset: User
         username_column: username
+        password_column: password
         roles_relationship: roles
         role_column: role
         password_check: check_password
+
+# Disable when Dancer::Plugin::Auth::Extensible is able to NOT register
+# /login, /login/denied, /logout routes.
+auth_route_fix: 1
+
+# Disable registration.
+disable_register: 1

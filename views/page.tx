@@ -1,24 +1,20 @@
-      <article>
-        <header>
-          <h2 id="pagetitle"><% $pagetitle %></h2>
-          <p><% $page.abstract %></p>
-        </header>
-|% markdown($page.message.unformatted, heading_ids => 0) | raw
-        <footer>
-          <p>- <% $page.author.username %>, <% $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %></p>
-          <p>Permalink: <a href="<% $request.uri_base %>/-<% $page.page_id %>" rel="nofollow"><% $request.uri_base %>/-<% $page.page_id %></a></p>
-        </footer>
-      </article>
-|% if $page.comments.all {
-      <section>
-        <h3>Comments</h3>
-|% for $_rset_all($page.comments) -> $comment {
-        <article>
-          <p><% $comment.message %></p>
-          <footer>
-            - <% $comment.displayname %>, <% $comment.commented_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>
-          </footer>
-        </article>
-|% }
+      <section role="main">
+        <article itemscope="itemscope" itemtype="http://schema.org/Article">
+          <header>
+            <meta itemprop="url" content="<% $request.uri_base %>/<% $page.category.category_uri %>/<% $page.page_uri %>">
+            <h2 id="pagesubject" itemprop="name"><% $page.subject %></h2>
+            <p id="pageabstract" itemprop="description"><% $page.abstract %></p>
+            <small>
+                <time itemprop="datePublished" datetime="<% $page.publication_on.strftime('%Y-%m-%dT%H:%I:%S%z') %>"><% if $page.publication_on.year == $now.year { $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B, %k:%M Uhr') } else { $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') } %></time>
+                <span> von </span>
+                <span itemprop="author">
+                  <span itemscope="itemscope" itemtype="http://schema.org/Person">
+                    <span itemprop="name"><% $page.author.username %></span>
+                  </span>
+                </span>
+              </small>
+          </header>
+          <section itemprop="articleBody">
+|% markdown( $page.message, heading_ids => 0 ) | raw
+          </section>
       </section>
-|% }
