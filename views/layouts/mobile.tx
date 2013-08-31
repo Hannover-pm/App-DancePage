@@ -13,15 +13,15 @@
     <meta name="robots" content="<% $robots %>">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/styles/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/styles/main.css">
+    <link rel="stylesheet" type="text/css" href="/styles/mobile.css">
   </head>
   <body>
     <header id="header" role="banner">
-|% include _topnav;
       <h1 id="sitename"><a href="/"><% $settings.sitename %></a></h1>
 |% if $settings.siteslogan {
       <p id="siteslogan"><% $settings.siteslogan %></p>
 |% }
+|% include _topnav;
     </header>
     <div id="main">
       <div id="breadcrumb">
@@ -54,7 +54,7 @@
     </div>
     <footer id="footer" role="contentinfo">
       <span>(c) 2013, Hannover.pm. All rights reserved.</span>
-      <a href="/-layout-mobile">Mobile Ansicht</a>
+      <a href="/-layout-main">Desktop Ansicht</a>
     </footer>
     <script type="text/javascript">
     <!--
@@ -63,6 +63,6 @@
     </script>
     <script type="text/javascript" defer="defer" src="/scripts/jquery.js"></script>
     <!-- <script type="text/javascript" defer="defer" src="/scripts/jquery-migrate.js"></script> -->
-    <script type="text/javascript" defer="defer" src="/scripts/main.js"></script>
+    <script type="text/javascript" defer="defer" src="/scripts/mobile.js"></script>
   </body>
 </html>

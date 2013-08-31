@@ -75,19 +75,10 @@ small {
 }
 
 body {
-  width: 980px;
-  margin:  0 auto;
+  width: 100%;
 }
 
 /**************************************************************************/
-.columns2 {
-  float: left;
-  width: 470px;
-  margin: 0.5em 10px;
-}
-.columns2_clearing {
-  clear: left;
-}
 
 ul.current_meetings,
 ul.latest_blogposts {
@@ -97,12 +88,29 @@ ul.latest_blogposts {
 
 /**************************************************************************/
 #header {
-  height: 260px;
-  background-image: url(/images/header-background-hannover-rathaus.jpg);
+  background: black;
+}
+
+#sitename {
+  font-size: 3em;
+  margin: 0 0 0 28px;
+  padding-top: .5em;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0.1em #333333;
+}
+#sitename a {
+  color: inherit;
+  border-bottom: none;
+}
+#siteslogan {
+  font-size: 1.1em;
+  margin: 0.8em 0 0 28px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0.1em #333333;
 }
 
 #topnav {
-  height: 40px;
+  margin-top: 1em;
   background: #000000;
   background-image: url(/images/oreilly-the-perl-camel-30x33.png);
   background-position: 4px 4px;
@@ -129,22 +137,6 @@ ul.topnav li span {
 #topnav_clearing {
   clear: left;
 }
-#sitename {
-  font-size: 3em;
-  margin: 120px 0 0 28px;
-  color: #FFFFFF;
-  text-shadow: 1px 1px 0.1em #333333;
-}
-#sitename a {
-  color: inherit;
-  border-bottom: none;
-}
-#siteslogan {
-  font-size: 1.1em;
-  margin: 0.8em 0 0 28px;
-  color: #FFFFFF;
-  text-shadow: 1px 1px 0.1em #333333;
-}
 
 /**************************************************************************/
 
@@ -157,14 +149,6 @@ ul.topnav li span {
 #breadcrumb a:link,
 #breadcrumb a:visited {
   color: #999999;
-}
-
-/**************************************************************************/
-
-#acpmenu ul.column2,
-#acpmenu ul.column2 ul {
-  margin: 0;
-  padding: 0;
 }
 
 /**************************************************************************/

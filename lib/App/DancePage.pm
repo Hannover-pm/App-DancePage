@@ -69,7 +69,10 @@ BEGIN {
 
 # Use other module.
 use Dancer::Plugin::DBIC qw( schema rset );
-use Dancer::Plugin::Auth::Extensible qw( logged_in_user authenticate_user user_has_role );
+use Dancer::Plugin::Auth::Extensible qw(
+  logged_in_user authenticate_user user_has_role require_role
+);
+use Dancer::Plugin::Browser::Detect qw( browser_detect );
 use DateTime qw();
 use Const::Fast qw( const );
 
@@ -83,6 +86,7 @@ const my $GENERIC_CATID         => 1;
 const my $BLOG_CATID            => 2;
 const my $METTINGS_CATID        => 3;
 const my $HTTP_STATUS_NOT_FOUND => 404;
+const my $SESS_KEY_LAYOUT       => 'layout';
 
 ############################################################################
 # Initial environment setup.
@@ -208,10 +212,12 @@ setup;
 sub void_session {
   my ($reason) = @_;
   return unless setting 'session';
-  my $old_sid = session->id;
+  my $old_sid    = session->id;
+  my $old_layout = session $SESS_KEY_LAYOUT;
   session->destroy;
   session $SECHK_KEY_UA => request->user_agent || $SECHK_UNDEF;
   session $SECHK_KEY_IP => request->address    || $SECHK_UNDEF;
+  session $SESS_KEY_LAYOUT => $old_layout if $old_layout;
   info sprintf 'Session %d voided: %s', $old_sid, $reason;
   return;
 }
@@ -236,6 +242,8 @@ sub uri_part {
 ############################################################################
 hook before => sub {
   var now => DateTime->now;
+  var layout => session($SESS_KEY_LAYOUT) || ( browser_detect->mobile ? 'mobile' : 'main' );
+  session $SESS_KEY_LAYOUT => var 'layout';
 };
 
 ############################################################################
@@ -348,6 +356,8 @@ sub get_index_route {
     current_meetings  => [ $current_meetings->all ],
     blog_category     => $blog_category,
     latest_blogposts  => [ $latest_blogposts->all ],
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/} => \&get_index_route;
@@ -363,6 +373,8 @@ sub get_login_route {
     ( request->referer ? ( return_url => request->referer ) : () ),
     login_failed => ( var('login_failed') ? 1 : 0 ),
     robots => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/login} => \&get_login_route;
@@ -408,6 +420,8 @@ sub get_login_denied_route {
     pagesubject  => 'Zugang verweigert',
     pageabstract => 'Sie besitzen für die gewünschte Seite keine ausreichenden Rechte',
     robots       => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/login/denied} => \&get_login_route;
@@ -433,6 +447,8 @@ sub get_register_route {
     pagesubject  => 'Registrierung',
     pageabstract => 'Hier können Sie ihr Benutzerkonto erstellen.',
     robots       => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/register} => \&get_register_route;
@@ -441,7 +457,6 @@ get q{/register} => \&get_register_route;
 # Route handler: register processing.
 sub post_register_route {
   return redirect q{/} if logged_in_user;
-
   return not_found_page() if setting 'disable_register';
   return 'TODO';
 }
@@ -455,9 +470,61 @@ sub get_register_confirmation_route {
     pagesubject  => 'Registrierung',
     pageabstract => 'Hier können Sie ihr Benutzerkonto erstellen.',
     robots       => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/register/confirmation} => \&get_register_confirmation_route;
+
+############################################################################
+# Route handler: acp index page.
+sub get_acp_route {
+
+  my $toppages = rset('Page')->search( {
+      publication_on => { not => undef },
+    }, {
+      order_by => [ { -desc => [qw( has_views publication_on page_id )] } ],
+      rows     => 3,
+    } );
+
+  my $pendingpages = rset('Page')->search( {
+      publication_on => undef,
+    }, {
+      order_by => [ { -desc => [qw( created_on page_id )] } ],
+    } );
+
+  my $newusers = rset('User')->search(
+    undef, {
+      order_by => [ { -desc => [qw( signup_on user_id )] } ],
+      rows     => 3,
+    } );
+
+  return template 'acp_index', {
+    category     => { category => 'ACP', category_uri => 'acp' },
+    pagecategory => 'ACP',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots       => 'noindex,nofollow,noarchive',
+    toppages     => [ $toppages->all ],
+    pendingpages => [ $pendingpages->all ],
+    newusers     => [ $newusers->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp} => require_role admin => \&get_acp_route;
+
+############################################################################
+# Route handler: generic page.
+sub get_layout_route {
+  return not_found_page() if !params->{layout};
+  if ( params->{layout} =~ m/^(?:main|mobile)$/ ) {
+    session layout => params->{layout};
+    return redirect request->referer || q{/};
+  }
+  return not_found_page();
+}
+get q{/-layout-:layout} => \&get_layout_route;
 
 ############################################################################
 # Route handler: generic page.
@@ -469,10 +536,13 @@ sub get_generic_page_route {
       page_uri => params->{page_uri},
     } )->single;
   return get_category_route( params->{page_uri} ) if !$generic_page;
+  $generic_page->update( { has_views => \'has_views + 1' } ) if !browser_detect->robot;
   return template 'page', {
     page         => $generic_page,
     pagesubject  => $generic_page->subject,
     pageabstract => $generic_page->abstract,
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/:page_uri} => \&get_generic_page_route;
@@ -491,6 +561,8 @@ sub get_category_route {
     category       => $category,
     category_pages => [ $pages->all ],
     pagecategory   => $category->category,
+    }, {
+    layout => var('layout'),
     };
 }
 
@@ -501,12 +573,15 @@ sub get_category_page_route {
   return any_not_found_route() if !$category;
   my $page = $category->search_related( 'pages', { page_uri => params->{page_uri} } )->single;
   return any_not_found_route() if !$page;
+  $page->update( { has_views => \'has_views + 1' } ) if !browser_detect->robot;
   return template 'page', {
     page         => $page,
     pagecategory => $category->category,
     pagesubject  => $page->subject,
     pageabstract => $page->abstract,
     pageauthor   => $page->author->username,
+    }, {
+    layout => var('layout'),
     };
 }
 get q{/:category_uri/:page_uri} => \&get_category_page_route;
@@ -518,6 +593,8 @@ sub any_not_found_route {
   return template 'not_found', {
     pagesubject  => 'Error 404',
     pageabstract => 'Die gewünschte Seite konnte nicht gefunden werden',
+    }, {
+    layout => var('layout'),
     };
 }
 any qr{.*} => \&any_not_found_route;

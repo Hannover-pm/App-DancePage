@@ -1,0 +1,72 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject">Admin Control Panel</h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <section>
+          <h3>Verwaltungsoptionen</h3>
+          <div>Wählen Sie eine der folgenden Optionen:</div>
+          <div class="columns2">
+            <ul>
+              <li><strong>Seitenverwaltung</strong>
+                <ul>
+                  <li><a href="/acp/page/all">Alle Seiten auflisten</a></li>
+                  <li><a href="/acp/page/create">Neue Seite anlegen</a></li>
+                </ul>
+              </li>
+              <li><strong>Kategorieverwaltung</strong>
+                <ul>
+                  <li><a href="/acp/category/all">Alle Kategorien auflisten</a></li>
+                  <li><a href="/acp/category/create">Neue Kategorie anlegen</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="columns2">
+            <ul>
+              <li><strong>Benutzer</strong>
+                <ul>
+                  <li><a href="/acp/user/all">Alle Benutzer auflisten</a></li>
+                  <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="columns2_clearing"></div>
+        </section>
+        <section>
+          <h3>Allgemeine Statistiken</h3>
+          <div>Aktuelle Informationen über diese <% $settings.appname %> Installation:</div>
+          <section>
+            <section class="columns2">
+              <h4>Top 3 Seiten</h4>
+              <p>Die drei beliebtesten Seiten sind:</p>
+              <ol>
+|% for $toppages -> $page {
+                <li><% if $page.category.category_uri { $page.category.category; ': ' } %><a href="<% if $page.category.category_uri { '/'; $page.category.category_uri } %>/<% $page.page_uri %>"><% $page.subject %></a> (<% $page.has_views %> Aufrufe)</li>
+|% }
+              </ol>
+            </section>
+            <section class="columns2">
+              <h4>Entwürfe</h4>
+              <p>Seiten, die auf ihre Veröffentlichung warten:</p>
+              <ul>
+|% for $pendingpages -> $page {
+                <li><% if $page.category.category_uri { $page.category.category; ': ' } %><a href="<% if $page.category.category_uri { '/'; $page.category.category_uri } %>/<% $page.page_uri %>"><% $page.subject %></a></li>
+|% }
+              </ul>
+            </section>
+            <div class="columns2_clearing"></div>
+            <section class="columns2">
+              <h4>Neueste Benutzer</h4>
+              <p>Die drei neuesten Registrierungen:</p>
+              <ul>
+|% for $newusers -> $user {
+                <li><% $user.username %></li>
+|% }
+              </ul>
+            </section>
+            <div class="columns2_clearing"></div>
+          </section>
+        </section>
+      </section>

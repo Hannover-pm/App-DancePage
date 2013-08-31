@@ -1,0 +1,20 @@
+<nav id="topnav">
+  <ul class="topnav">
+    <li><a href="/">Start</a></li>
+    <li><a href="/ueber-uns">Über uns</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="/treffen">Treffen</a></li>
+    <li><a href="/kontakt">Kontakt</a></li>
+|% if $logged_in_user {
+|% if $user_has_role('admin') {
+    <li><a href="/acp">ACP</a></li>
+|% }
+    <li><a href="/logout<% if $settings.auth_route_fix { '2' } %>">Logout</a></li>
+|% } else {
+    <li><a href="/login<% if $settings.auth_route_fix { '2' } %>">Login</a></li>
+|% if !$settings.disable_register {
+    <li><a href="/register">Registrierung</a></li>
+|% } }
+  </ul>
+  <div id="topnav_clearing"></div>
+</nav>
