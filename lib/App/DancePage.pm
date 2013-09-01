@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.003;
+  our $VERSION = 0.004;
 }
 
 # Use only Dancer at this time.
@@ -281,11 +281,17 @@ sub generate_sitemap {
       order_by => [ { -asc => [qw( publication_on )] } ],
     } );
 
+  my $fix_lastmod = sub {
+    my ($datetime) = @_;
+    my $strftime = $datetime->strftime('%Y-%m-%dT%H:%I:%S%z');
+    return $strftime =~ s/^(.+)(\d\d)$/$1:$2/r;
+  };
+
   push @{ $xmlh->{urlset}->{url} }, {
     loc        => ['http://hannover.pm/'],
     changefreq => ['daily'],
     priority   => ['1.0'],
-    lastmod    => [ DateTime->now->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+    lastmod    => [ $fix_lastmod->( DateTime->now ) ],
     };
 
   foreach my $page ( $pages->all ) {
@@ -295,7 +301,7 @@ sub generate_sitemap {
         loc        => [ sprintf( 'http://hannover.pm/%s', $page->page_uri ) ],
         changefreq => ['weekly'],
         priority   => ['0.8'],
-        lastmod    => [ $lastmod->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+        lastmod    => [ $fix_lastmod->($lastmod) ],
         };
     }
     else {
@@ -303,7 +309,7 @@ sub generate_sitemap {
         loc => [ sprintf( 'http://hannover.pm/%s/%s', $page->category->category_uri, $page->page_uri ) ],
         changefreq => ['monthly'],
         priority   => ['0.6'],
-        lastmod    => [ $lastmod->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+        lastmod    => [ $fix_lastmod->($lastmod) ],
         };
     }
   }
