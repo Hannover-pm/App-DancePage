@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.008;
+  our $VERSION = 0.009;
 }
 
 # Use only Dancer at this time.
@@ -222,7 +222,7 @@ sub void_session {
   my $old_layout = session $SESS_KEY_LAYOUT;
   session->destroy;
   session $SECHK_KEY_UA => request->user_agent || $SECHK_UNDEF;
-  session $SECHK_KEY_IP => request->address    || $SECHK_UNDEF;
+  session $SECHK_KEY_IP => request->forwarded_for_address || request->address || $SECHK_UNDEF;
   session $SESS_KEY_LAYOUT => $old_layout if $old_layout;
   info sprintf 'Session %d voided: %s', $old_sid, $reason;
   return;
@@ -341,8 +341,8 @@ sub security_check_hook {
   # Session stealing prevention.
   if ( setting 'session' ) {
 
-    my $request_agent   = request->user_agent || $SECHK_UNDEF;
-    my $request_address = request->address    || $SECHK_UNDEF;
+    my $request_agent = request->user_agent || $SECHK_UNDEF;
+    my $request_address = request->forwarded_for_address || request->address || $SECHK_UNDEF;
     my $session_agent   = session $SECHK_KEY_UA;
     my $session_address = session $SECHK_KEY_IP;
 
