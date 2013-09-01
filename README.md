@@ -24,10 +24,12 @@ The following Perl modules are required:
 * [DBIx::Class::EncodedColumn](http://p3rl.org/DBIx::Class::EncodedColumn)
 * [DBIx::Class::InflateColumn::Markup::Unified](http://p3rl.org/DBIx::Class::InflateColumn::Markup::Unified)
 * [DateTime](http://p3rl.org/DateTime)
+* [DateTime::Duration](http://p3rl.org/DateTime::Duration)
 * [DateTime::Format::SQLite](http://p3rl.org/DateTime::Format::SQLite)
 * [Text::Xslate::Bridge::MultiMarkdown](http://p3rl.org/Text::Xslate::Bridge::MultiMarkdown)
 * [YAML](http://p3rl.org/YAML)
 * [XML::Simple](http://p3rl.org/XML::Simple)
+* [GD](http://p3rl.org/GD)
 
 For testing purposes additionally:
 
