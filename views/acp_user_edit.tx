@@ -1,0 +1,71 @@
+      <section role="main">
+        <header>
+          <hgroup>
+            <h2 id="pagesubject">Admin Control Panel</h2>
+            <h3><% $pagesubject %></h3>
+          </hgroup>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="user_edit" action="<% $request.uri %>" method="post">
+          <table name="user_edit" border="1" width="100%" cellpadding="2">
+            <colgroup>
+              <col width="150">
+              <col width="">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>ID</th>
+                <td><% $user.user_id %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Benutzername</th>
+                <td><input type="text" id="user_edit_username" name="username" value="<% $user.username %>" required="required" autocomplete="off" autofocus="autofocus" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Passwort</th>
+                <td><input type="password" id="user_edit_password" name="password" value="" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>E-Mail Adresse</th>
+                <td><input type="text" id="user_edit_email" name="email" value="<% $user.email %>" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Registriert am</th>
+                <td><% $user.signup_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Zuletzt eingeloggt am</th>
+                <td><% $user.last_login_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Fehlgeschlagene Logins</th>
+                <td>
+                  <span><% $user.has_failed_logins %></span>
+                  <br>
+                  <label><input type="checkbox" name="has_failed_logins" value="0"> Zähler zurücksetzen</label>
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Rollen</th>
+                <td>
+|% for $roles -> $role {
+                  <label style="display:block">
+                    <input type="checkbox" name="roles" value="<% $role.role %>"<% if $user_has_role($user.username, $role.role) { ' checked="checked"' | raw } %>>
+                    <span><% $role.role %></span>
+                  </label>
+|% }
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <td>
+                  <input type="submit" value="Benutzer ändern">
+                  <input type="reset" value="Änderungen zurücksetzen">
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </section>

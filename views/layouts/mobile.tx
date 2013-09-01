@@ -22,6 +22,11 @@
       <p id="siteslogan"><% $settings.siteslogan %></p>
 |% }
 |% include _topnav;
+|% if $logged_in_user {
+      <div id="userbar">
+        <span>Hallo <% $logged_in_user.username %>!</span>
+      </div>
+|% }
     </header>
     <div id="main">
       <div id="breadcrumb">

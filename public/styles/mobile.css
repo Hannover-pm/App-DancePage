@@ -138,6 +138,12 @@ ul.topnav li span {
   clear: left;
 }
 
+#userbar {
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0.1em #333333;
+  padding: 10px;
+}
+
 /**************************************************************************/
 
 #breadcrumb {

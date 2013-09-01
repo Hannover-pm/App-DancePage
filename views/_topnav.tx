@@ -6,7 +6,7 @@
     <li><a href="/treffen">Treffen</a></li>
     <li><a href="/kontakt">Kontakt</a></li>
 |% if $logged_in_user {
-|% if $user_has_role('admin') {
+|% if $user_has_any_role(['admin','page_admin','page_author']) {
     <li><a href="/acp">ACP</a></li>
 |% }
     <li><a href="/logout<% if $settings.auth_route_fix { '2' } %>">Logout</a></li>

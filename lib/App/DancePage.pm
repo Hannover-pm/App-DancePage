@@ -70,7 +70,7 @@ BEGIN {
 # Use other module.
 use Dancer::Plugin::DBIC qw( schema rset );
 use Dancer::Plugin::Auth::Extensible qw(
-  logged_in_user authenticate_user user_has_role require_role
+  logged_in_user authenticate_user user_has_role require_role require_any_role
 );
 use Dancer::Plugin::Browser::Detect qw( browser_detect );
 use DateTime qw();
@@ -110,11 +110,13 @@ sub setup {
       rset('DbInfo')->create( { property => 'schema_version', value => $schema_version } );
 
       # Register default roles.
-      rset('Role')->create( { role => $_ } ) for (qw( admin ));
+      rset('Role')->create( { role => $_ } ) for (qw( admin page_admin page_author page_comment ));
 
       # Register default users.
       my $admin_user =
-        rset('User')->create( { username => 'admin', password => 'admin', signup_on => $now } );
+        rset('User')
+        ->create(
+        { username => 'admin', password => 'admin', email => 'admin@localhost', signup_on => $now } );
 
       # Register default user roles.
       rset('User')->search( { username => 'admin' } )->single->set_roles( [ { role => 'admin' } ] );
@@ -322,6 +324,22 @@ sub default_token_hook {
     return 0 if !$user;
     return user_has_role( $user, $role ) ? 1 : 0;
   };
+  $tokens->{user_has_any_role} = sub {
+    my ( $user, $roles ) = @_;
+    $roles = $user and $user = undef if !$roles;
+    $user = logged_in_user->username if !$user && logged_in_user;
+    return 0 if !$user;
+    for ( @{$roles} ) {
+      return 1 if user_has_role( $user, $_ );
+    }
+    return 0;
+  };
+
+  $tokens->{rset_all} = sub {
+    my ( $rset, $field ) = @_;
+    return [ $rset->all ] if !$field;
+    return [ map { $_->$field } $rset->all ];
+  };
 
   $tokens->{robots} = 'index,follow,archive';
 
@@ -370,9 +388,9 @@ sub get_login_route {
   return template 'login', {
     pagesubject  => 'Login',
     pageabstract => 'Hier können Sie sich in Ihr Benutzerkonto einloggen',
-    ( request->referer ? ( return_url => request->referer ) : () ),
+    return_url   => ( params->{return_url} || request->referer || q{/} ),
     login_failed => ( var('login_failed') ? 1 : 0 ),
-    robots => 'noindex,nofollow,noarchive',
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -512,10 +530,131 @@ sub get_acp_route {
     layout => var('layout'),
     };
 }
-get q{/acp} => require_role admin => \&get_acp_route;
+get q{/acp} => require_any_role [qw( admin page_admin page_author )] => \&get_acp_route;
 
 ############################################################################
-# Route handler: generic page.
+# Route handler: acp index page.
+sub get_acp_user_list_route {
+
+  my $users = rset('User')->search( undef, { order_by => [ { -asc => [qw( user_id )] } ] } );
+
+  return template 'acp_user_list', {
+    page => {
+      page_uri => 'user/list ', subject => 'Benutzer auflisten',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Benutzer auflisten',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots => 'noindex,nofollow,noarchive',
+    users  => [ $users->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/user/list} => require_role admin => \&get_acp_user_list_route;
+
+############################################################################
+# Route handler: acp index page.
+sub get_acp_user_edit_route {
+
+  my $user = rset('User')->search( { user_id => params->{user_id} } )->single;
+  return not_found_page() if !$user;
+  my $username = $user->username;
+
+  my $roles = rset('Role');
+
+  return template 'acp_user_edit', {
+    page => {
+      page_uri => 'user/edit/1 ', subject => "Benutzer $username bearbeiten",
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => "Benutzer $username bearbeiten",
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots => 'noindex,nofollow,noarchive',
+    user   => $user,
+    roles  => [ $roles->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/user/edit/:user_id} => require_role admin => \&get_acp_user_edit_route;
+
+############################################################################
+# Route handler: acp index page.
+sub post_acp_user_edit_route {
+  return redirect request->uri if !scalar keys %{ params() };
+
+  my $user = rset('User')->search( { user_id => params->{user_id} } )->single;
+  return not_found_page() if !$user;
+
+  $user->update( {
+    username => params->{username},
+    email    => params->{email},
+    ( params->{password}                  ? ( password          => params->{password} )          : () ),
+    ( defined params->{has_failed_logins} ? ( has_failed_logins => params->{has_failed_logins} ) : () ),
+  } );
+
+  my $roles = [];
+  foreach my $role ( @{ ref params->{roles} ? params->{roles} : [ params->{roles} ] } ) {
+    push @{$roles}, { role => $role };
+  }
+  $user->set_roles($roles);
+
+  return redirect request->uri;
+}
+post q{/acp/user/edit/:user_id} => require_role admin => \&post_acp_user_edit_route;
+
+############################################################################
+# Route handler: acp index page.
+sub get_acp_user_create_route {
+
+  my $roles = rset('Role');
+
+  return template 'acp_user_create', {
+    page => {
+      page_uri => 'user/edit/1 ', subject => 'Neuen Benutzer anlegen',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Neuen Benutzer anlegen',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots => 'noindex,nofollow,noarchive',
+    roles  => [ $roles->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/user/create} => require_role admin => \&get_acp_user_create_route;
+
+############################################################################
+# Route handler: acp index page.
+sub post_acp_user_create_route {
+  return redirect request->uri if !scalar keys %{ params() };
+
+  my $user = rset('User')->create( {
+    username  => params->{username},
+    email     => params->{email},
+    password  => params->{password},
+    signup_on => var('now'),
+  } );
+
+  my $roles = [];
+  foreach my $role ( @{ ref params->{roles} ? params->{roles} : [ params->{roles} ] } ) {
+    push @{$roles}, { role => $role };
+  }
+  $user->set_roles($roles);
+
+  return redirect sprintf '/acp/user/list';
+}
+post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
+
+############################################################################
+# Route handler: change session layout.
 sub get_layout_route {
   return not_found_page() if !params->{layout};
   if ( params->{layout} =~ m/^(?:main|mobile)$/ ) {
@@ -525,6 +664,17 @@ sub get_layout_route {
   return not_found_page();
 }
 get q{/-layout-:layout} => \&get_layout_route;
+
+############################################################################
+# Route handler: permalink redirection.
+sub get_permalink_route {
+  return not_found_page() if !params->{page_id};
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->single;
+  return not_found_page() if !$page;
+  return redirect sprintf '/%s', $page->page_uri if !$page->category->category_uri;
+  return redirect sprintf '/%s/%s', $page->category->category_uri, $page->page_uri;
+}
+get q{/-:page_id} => \&get_permalink_route;
 
 ############################################################################
 # Route handler: generic page.

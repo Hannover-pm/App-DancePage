@@ -146,6 +146,21 @@ ul.topnav li span {
   text-shadow: 1px 1px 0.1em #333333;
 }
 
+#userbar {
+  position: absolute;
+  width: 250px;
+  top: 0;
+  margin: 40px 0 0 730px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0.1em #333333;
+  text-align: right;
+}
+#userbar span {
+  padding: 10px;
+  background: black;
+  border-bottom-left-radius: 10px;
+}
+
 /**************************************************************************/
 
 #breadcrumb {

@@ -1,0 +1,52 @@
+      <section role="main">
+        <header>
+          <hgroup>
+            <h2 id="pagesubject">Admin Control Panel</h2>
+            <h3><% $pagesubject %></h3>
+          </hgroup>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <p><a href="/acp/user/create">Neuen Benutzer anlegen</a></p>
+        <table border="1" width="100%" cellpadding="2">
+          <colgroup>
+            <col width="50">
+            <col width="">
+            <col width="150">
+            <col width="150">
+            <col width="150">
+            <col width="130">
+          </colgroup>
+          <thead>
+            <tr align="right" valign="bottom">
+              <th>ID</th>
+              <th align="left">Benutzername</th>
+              <th align="left">Rollen</th>
+              <th>Registriert am</th>
+              <th>Zuletzt eingeloggt am</th>
+              <th>Fehlgeschlagene Logins</th>
+            </tr>
+          </thead>
+          <tbody>
+|% for $users -> $user {
+            <tr align="right" valign="top">
+              <td><% $user.user_id %></td>
+              <td align="left"><a href="/acp/user/edit/<% $user.user_id %>"><% $user.username %></a></td>
+              <td align="left"><% $rset_all($user.roles, 'role').join(', ') %></td>
+              <td>
+                <span><% $user.signup_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y') %></span>
+                <br>
+                <span><% $user.signup_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%k:%M Uhr') %></span>
+              </td>
+              <td>
+|% if $user.last_login_on {
+                <span><% $user.last_login_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y') %></span>
+                <br>
+                <span><% $user.last_login_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%k:%M Uhr') %></span>
+|% }
+              </td>
+              <td><% $user.has_failed_logins %></td>
+            </tr>
+|% }
+          </tbody>
+        </table>
+      </section>

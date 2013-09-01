@@ -5,7 +5,7 @@ use warnings FATAL => 'all';
 use utf8;
 
 BEGIN {
-  our $VERSION = 1;
+  our $VERSION = 3;
 }
 
 use base qw( DBIx::Class::Schema );

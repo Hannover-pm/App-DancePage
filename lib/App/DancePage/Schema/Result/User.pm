@@ -40,6 +40,12 @@ column password => {
   encode_check_method => 'check_password',
 };
 
+column email => {
+  data_type   => 'varchar',
+  size        => 254,
+  is_nullable => 0,
+};
+
 column signup_on => {
   data_type   => 'datetime',
   is_nullable => 0,
@@ -61,6 +67,7 @@ column has_failed_logins => {
 # Index definition.
 
 unique_constraint users_idx_username => [qw( username )];
+unique_constraint users_idx_email    => [qw( email )];
 
 sub sqlt_deploy_hook {
   my ( $self, $sqlt_table ) = @_;

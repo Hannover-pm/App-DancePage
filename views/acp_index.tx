@@ -8,30 +8,35 @@
           <div>Wählen Sie eine der folgenden Optionen:</div>
           <div class="columns2">
             <ul>
+|% if $user_has_any_role(['admin','page_admin','page_author']) {
               <li><strong>Seitenverwaltung</strong>
                 <ul>
-                  <li><a href="/acp/page/all">Alle Seiten auflisten</a></li>
+                  <li><a href="/acp/page/list">Alle Seiten auflisten</a></li>
                   <li><a href="/acp/page/create">Neue Seite anlegen</a></li>
                 </ul>
               </li>
+|% } if $user_has_any_role(['admin','page_admin']) {
               <li><strong>Kategorieverwaltung</strong>
                 <ul>
-                  <li><a href="/acp/category/all">Alle Kategorien auflisten</a></li>
+                  <li><a href="/acp/category/list">Alle Kategorien auflisten</a></li>
                   <li><a href="/acp/category/create">Neue Kategorie anlegen</a></li>
                 </ul>
               </li>
             </ul>
+|% }
           </div>
+|% if $user_has_role('admin') {
           <div class="columns2">
             <ul>
               <li><strong>Benutzer</strong>
                 <ul>
-                  <li><a href="/acp/user/all">Alle Benutzer auflisten</a></li>
+                  <li><a href="/acp/user/list">Alle Benutzer auflisten</a></li>
                   <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
                 </ul>
               </li>
             </ul>
           </div>
+|% }
           <div class="columns2_clearing"></div>
         </section>
         <section>
