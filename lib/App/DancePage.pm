@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.004;
+  our $VERSION = 0.005;
 }
 
 # Use only Dancer at this time.
@@ -426,6 +426,27 @@ sub default_token_hook {
   };
 
   $tokens->{robots} = 'index,follow,archive';
+
+  $tokens->{piwik_cvar} ||= [];
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 1,
+    name  => 'Besucherstatus',
+    value => ( logged_in_user() ? 'Angemeldet' : 'Gast' ),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 2,
+    name  => 'Kategorie',
+    value => ( $tokens->{pagecategory} || 'Generisch' ),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 1,
+    name  => 'Besucherstatus',
+    value => 'Registriert',
+    scope => 'visit',
+    }
+    if logged_in_user;
 
   return;
 }
