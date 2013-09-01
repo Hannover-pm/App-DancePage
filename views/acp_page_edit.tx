@@ -73,7 +73,7 @@
               <tr align="left" valign="top">
                 <th>URL</th>
                 <td>
-                  <span><% if $editpage.category.category_uri { '/'; $editpage.category.category_uri } %>/<input id="page_edit_page_uri" name="page_uri" value="<% $editpage.page_uri %>" required="required" autocomplete="off" style="width:50%"></span>
+                  <span><% if $editpage.category.category_uri { '/'; $editpage.category.category_uri } %>/<input id="page_edit_page_uri" name="page_uri" value="<% $editpage.page_uri %>" autocomplete="off" style="width:50%"></span>
                   <br>
                   <small>Die URL wird automatisch generiert, sofern keine vorgegeben ist</small>
                 </td>
