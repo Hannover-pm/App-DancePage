@@ -75,6 +75,7 @@ use Dancer::Plugin::Auth::Extensible qw(
 use Dancer::Plugin::Browser::Detect qw( browser_detect );
 use DateTime qw();
 use Const::Fast qw( const );
+use XML::Simple qw();
 
 # Define lexical constants.
 const my $SECHK_KEY_UA          => '_sechk_ua';
@@ -239,6 +240,82 @@ sub uri_part {
   $uri_part =~ s/^-+|-+$//g;
   $uri_part =~ s/-+/-/g;
   return $uri_part;
+}
+
+############################################################################
+# Helper routine to generate an uri part out of a supplied string (title).
+sub generate_sitemap {
+
+  my $xmls = XML::Simple->new(
+    AttrIndent     => 0,
+    ContentKey     => '_content',
+    KeepRoot       => 1,
+    NoAttr         => 0,
+    NoEscape       => 0,
+    NoIndent       => 0,
+    NoSort         => 1,
+    NormaliseSpace => 0,
+    NumericEscape  => 0,
+    RootName       => 'urlset',
+    StrictMode     => 1,
+    SuppressEmpty  => undef,
+    XMLDecl        => q{<?xml version="1.0" encoding="UTF-8"?>},
+  );
+
+  my $xmlh = {
+    urlset => {
+      xmlns                => q{http://www.sitemaps.org/schemas/sitemap/0.9},
+      'xmlns:xsi'          => q{http://www.w3.org/2001/XMLSchema-instance},
+      'xsi:schemaLocation' => join(
+        "\n",
+        q{http://www.sitemaps.org/schemas/sitemap/0.9},
+        q{http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd},
+      ),
+      url => [],
+    } };
+
+  my $pages = rset('Page')->search( {
+      publication_on => { not => undef },
+    }, {
+      order_by => [ { -asc => [qw( publication_on )] } ],
+    } );
+
+  push @{ $xmlh->{urlset}->{url} }, {
+    loc        => ['http://hannover.pm/'],
+    changefreq => ['daily'],
+    priority   => ['1.0'],
+    lastmod    => [ DateTime->now->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+    };
+
+  foreach my $page ( $pages->all ) {
+    my $lastmod = $page->last_edit_on || $page->publication_on;
+    if ( !$page->category->category_uri ) {
+      push @{ $xmlh->{urlset}->{url} }, {
+        loc        => [ sprintf( 'http://hannover.pm/%s', $page->page_uri ) ],
+        changefreq => ['weekly'],
+        priority   => ['0.8'],
+        lastmod    => [ $lastmod->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+        };
+    }
+    else {
+      push @{ $xmlh->{urlset}->{url} }, {
+        loc => [ sprintf( 'http://hannover.pm/%s/%s', $page->category->category_uri, $page->page_uri ) ],
+        changefreq => ['monthly'],
+        priority   => ['0.6'],
+        lastmod    => [ $lastmod->strftime('%Y-%m-%dT%H:%I:%S%z') ],
+        };
+    }
+  }
+
+  if ( open my $sitemap_fh, '>', './public/sitemap.xml' ) {
+    print {$sitemap_fh} $xmls->XMLout($xmlh);
+    close $sitemap_fh or warning "Can't close sitemap.xml: $OS_ERROR";
+  }
+  else {
+    error "Can't write sitemap.xml: $OS_ERROR";
+  }
+
+  return;
 }
 
 ############################################################################
@@ -753,6 +830,8 @@ sub post_acp_page_edit_route {
     page_uri     => uri_part( params->{page_uri} || params->{subject} ),
   } );
 
+  generate_sitemap();
+
   return redirect '/acp/page/list';
 }
 post q{/acp/page/edit/:page_id} => require_any_role [qw( admin page_admin page_author )] =>
@@ -797,6 +876,8 @@ sub post_acp_page_create_route {
     page_uri       => uri_part( params->{page_uri} || params->{subject} ),
   } );
 
+  generate_sitemap();
+
   return redirect '/acp/page/list';
 }
 post q{/acp/page/create} => require_any_role [qw( admin page_admin page_author )] =>
@@ -814,9 +895,9 @@ sub get_acp_page_delete_route {
   {
     return redirect '/login/denied';
   }
-  
+
   $page->delete;
-  
+
   return redirect '/acp/page/list';
 }
 get q{/acp/page/delete/:page_id} => require_any_role [qw( admin page_admin page_author )] =>

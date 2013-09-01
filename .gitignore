@@ -9,3 +9,4 @@ tmp*.html
 /views/cache
 *~
 /MyJenkins*
+/public/sitemap.xml
