@@ -16,6 +16,7 @@
                 </ul>
               </li>
 |% } if $user_has_any_role(['admin','page_admin']) {
+<!--
               <li><strong>Kategorieverwaltung</strong>
                 <ul>
                   <li><a href="/acp/category/list">Alle Kategorien auflisten</a></li>
@@ -23,6 +24,7 @@
                 </ul>
               </li>
             </ul>
+-->
 |% }
           </div>
 |% if $user_has_role('admin') {
