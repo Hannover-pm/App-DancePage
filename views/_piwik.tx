@@ -1,3 +1,4 @@
+|% if $settings.environment == 'production' {
 <!-- Piwik -->
 <script type="text/javascript">
   var _paq = _paq || [];
@@ -14,3 +15,4 @@
 </script>
 <noscript><img src="https://webstat.dev5media.de/piwik.php?idsite=10&amp;rec=1" style="border:0" alt="" /></noscript>
 <!-- End Piwik Code -->
+|% }
