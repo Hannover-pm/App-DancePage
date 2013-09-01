@@ -54,6 +54,7 @@
 |% }
               </ol>
             </section>
+<!--
             <section class="columns2">
               <h4>Entwürfe</h4>
               <p>Seiten, die auf ihre Veröffentlichung warten:</p>
@@ -64,6 +65,7 @@
               </ul>
             </section>
             <div class="columns2_clearing"></div>
+-->
             <section class="columns2">
               <h4>Neueste Benutzer</h4>
               <p>Die drei neuesten Registrierungen:</p>
