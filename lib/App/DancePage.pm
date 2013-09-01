@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.009;
+  our $VERSION = 0.010;
 }
 
 # Use only Dancer at this time.
