@@ -616,7 +616,7 @@ sub get_acp_user_create_route {
 
   return template 'acp_user_create', {
     page => {
-      page_uri => 'user/edit/1 ', subject => 'Neuen Benutzer anlegen',
+      page_uri => 'user/create', subject => 'Neuen Benutzer anlegen',
       category => { category => 'ACP', category_uri => 'acp' }
     },
     pagecategory => 'ACP',
@@ -652,6 +652,155 @@ sub post_acp_user_create_route {
   return redirect sprintf '/acp/user/list';
 }
 post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
+
+############################################################################
+# Route handler: acp list pages.
+sub get_acp_page_list_route {
+
+  my $generic_pages = rset('Page')->search( { (
+          ( !user_has_role('admin') && !user_has_role('page_admin') )
+        ? ( author_id => ( logged_in_user->user_id ) )
+        : ()
+      ),
+      category_id => $GENERIC_CATID,
+    }, {
+      order_by => [ { -asc => 'page_id' } ],
+    } );
+
+  my $pages = rset('Page')->search( { (
+          ( !user_has_role('admin') && !user_has_role('page_admin') )
+        ? ( author_id => ( logged_in_user->user_id ) )
+        : ()
+      ),
+      category_id => { '!=' => $GENERIC_CATID },
+    }, {
+      order_by => [ { -desc => 'page_id' } ],
+    } );
+
+  return template 'acp_page_list', {
+    page => {
+      page_uri => 'page/list ', subject => 'Seiten auflisten',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Seiten auflisten',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots => 'noindex,nofollow,noarchive',
+    pages  => [ $generic_pages->all, $pages->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/page/list} => require_any_role [qw( admin page_admin page_author )] =>
+  \&get_acp_page_list_route;
+
+############################################################################
+# Route handler: acp edit page.
+sub get_acp_page_edit_route {
+
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->single;
+
+  if ( !user_has_role('admin')
+    && !user_has_role('page_admin')
+    && $page->author_id != logged_in_user->user_id )
+  {
+    return redirect '/login/denied';
+  }
+
+  my $categories = rset('Category');
+
+  return template 'acp_page_edit', {
+    page => {
+      page_uri => 'page/edit/' . $page->page_id, subject => 'Seiten bearbeiten',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Seiten bearbeiten',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots               => 'noindex,nofollow,noarchive',
+    editpage             => $page,
+    avaliable_categories => [ $categories->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/page/edit/:page_id} => require_any_role [qw( admin page_admin page_author )] =>
+  \&get_acp_page_edit_route;
+
+############################################################################
+# Route handler: acp edit page.
+sub post_acp_page_edit_route {
+
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->single;
+
+  if ( !user_has_role('admin')
+    && !user_has_role('page_admin')
+    && $page->author_id != logged_in_user->user_id )
+  {
+    return redirect '/login/denied';
+  }
+
+  $page->update( {
+    category_id  => params->{category_id},
+    subject      => params->{subject},
+    abstract     => params->{abstract},
+    message      => params->{message},
+    has_edits    => \'has_edits + 1',
+    last_edit_on => var('now'),
+    last_editor  => logged_in_user,
+    page_uri     => uri_part( params->{page_uri} || params->{subject} ),
+  } );
+
+  return redirect '/acp/page/list';
+}
+post q{/acp/page/edit/:page_id} => require_any_role [qw( admin page_admin page_author )] =>
+  \&post_acp_page_edit_route;
+
+############################################################################
+# Route handler: acp edit page.
+sub get_acp_page_create_route {
+
+  my $categories = rset('Category');
+
+  return template 'acp_page_create', {
+    page => {
+      page_uri => 'page/create', subject => 'Seiten erstellen',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Seiten erstellen',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots               => 'noindex,nofollow,noarchive',
+    avaliable_categories => [ $categories->all ],
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/page/create} => require_any_role [qw( admin page_admin page_author )] =>
+  \&get_acp_page_create_route;
+
+############################################################################
+# Route handler: acp edit page.
+sub post_acp_page_create_route {
+
+  rset('Page')->create( {
+    category_id    => params->{category_id},
+    subject        => params->{subject},
+    abstract       => params->{abstract},
+    message        => params->{message},
+    author         => logged_in_user,
+    created_on     => var('now'),
+    publication_on => var('now'),
+    page_uri       => uri_part( params->{page_uri} || params->{subject} ),
+  } );
+
+  return redirect '/acp/page/list';
+}
+post q{/acp/page/create} => require_any_role [qw( admin page_admin page_author )] =>
+  \&post_acp_page_create_route;
 
 ############################################################################
 # Route handler: change session layout.

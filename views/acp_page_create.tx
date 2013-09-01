@@ -1,0 +1,59 @@
+      <section role="main">
+        <header>
+          <hgroup>
+            <h2 id="pagesubject">Admin Control Panel</h2>
+            <h3><% $pagesubject %></h3>
+          </hgroup>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="page_create" action="<% $request.uri %>" method="post">
+          <table name="page_create" border="1" width="100%" cellpadding="2">
+            <colgroup>
+              <col width="150">
+              <col width="">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>Kategorie</th>
+                <td>
+|% for $avaliable_categories -> $category {
+                  <label style="display:block">
+                    <input type="radio" name="category_id" value="<% $category.category_id %>" required="required" autocomplete="off">
+                    <% $category.category %>
+                  </label>
+|% }
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Seitentitel</th>
+                <td><input id="page_create_subject" name="subject" value="" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Kurzbeschreibung</th>
+                <td><input id="page_create_abstract" name="abstract" value="" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Seiteninhalt</th>
+                <td><textarea id="page_create_message" name="message" class="for_epiceditor" required="required" autocomplete="off" style="width:99%" rows="20"></textarea></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>URL (optional)</th>
+                <td>
+                  <span>/<em>Kategorie</em>/<input id="page_create_page_uri" name="page_uri" value="" autocomplete="off" style="width:50%"></span>
+                  <br>
+                  <small>Die URL wird automatisch generiert, sofern keine vorgegeben ist</small>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <td>
+                  <input type="submit" value="Seite erstellen">
+                  <input type="reset" value="Änderungen zurücksetzen">
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </section>

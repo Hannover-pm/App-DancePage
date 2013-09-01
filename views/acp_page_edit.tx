@@ -1,0 +1,93 @@
+      <section role="main">
+        <header>
+          <hgroup>
+            <h2 id="pagesubject">Admin Control Panel</h2>
+            <h3><% $pagesubject %></h3>
+          </hgroup>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="page_edit" action="<% $request.uri %>" method="post">
+          <table name="page_edit" border="1" width="100%" cellpadding="2">
+            <colgroup>
+              <col width="150">
+              <col width="">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>ID</th>
+                <td><% $editpage.page_id %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Kategorie</th>
+                <td>
+|% for $avaliable_categories -> $category {
+                  <label style="display:block">
+                    <input type="radio" name="category_id" value="<% $category.category_id %>" required="required" autocomplete="off"<% if $category.category_id == $editpage.category.category_id { ' checked="checked"' | raw } %>>
+                    <% $category.category %>
+                  </label>
+|% }
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Seitentitel</th>
+                <td><input id="page_edit_subject" name="subject" value="<% $editpage.subject %>" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Kurzbeschreibung</th>
+                <td><input id="page_edit_abstract" name="abstract" value="<% $editpage.abstract %>" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Seiteninhalt</th>
+                <td><textarea id="page_edit_message" name="message" class="for_epiceditor" required="required" autocomplete="off" style="width:99%" rows="20"><% $editpage.message.unformatted %></textarea></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Erstellt am</th>
+                <td>
+                  <span><% $editpage.created_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></span>
+                  <span>von <% $editpage.author.username %></span>
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Veröffentlicht am</th>
+                <td>
+|% if $editpage.publication_on {
+                  <span><% $editpage.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></span>
+|% }
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Änderungen</th>
+                <td>
+                  <span><% $editpage.has_edits %></span>
+|% if $editpage.has_edits {
+                  <span>(zuletzt am</span>
+                  <span><% $editpage.last_edit_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></span>
+                  <span>von <% $editpage.last_editor.username %>)</span>
+|% }
+                </td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Aufrufe</th>
+                <td><% $editpage.has_views %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>URL</th>
+                <td>
+                  <span><% if $editpage.category.category_uri { '/'; $editpage.category.category_uri } %>/<input id="page_edit_page_uri" name="page_uri" value="<% $editpage.page_uri %>" required="required" autocomplete="off" style="width:50%"></span>
+                  <br>
+                  <small>Die URL wird automatisch generiert, sofern keine vorgegeben ist</small>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <td>
+                  <input type="submit" value="Seite ändern">
+                  <input type="reset" value="Änderungen zurücksetzen">
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </section>

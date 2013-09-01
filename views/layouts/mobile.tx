@@ -68,6 +68,6 @@
     </script>
     <script type="text/javascript" defer="defer" src="/scripts/jquery.js"></script>
     <!-- <script type="text/javascript" defer="defer" src="/scripts/jquery-migrate.js"></script> -->
-    <script type="text/javascript" defer="defer" src="/scripts/mobile.js"></script>
+    <script type="text/javascript" defer="defer" src="/scripts/main.js"></script>
   </body>
 </html>

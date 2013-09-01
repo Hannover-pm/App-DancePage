@@ -1,0 +1,63 @@
+      <section role="main">
+        <header>
+          <hgroup>
+            <h2 id="pagesubject">Admin Control Panel</h2>
+            <h3><% $pagesubject %></h3>
+          </hgroup>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <p><a href="/acp/page/create">Neue Seite anlegen</a></p>
+        <table border="1" width="100%" cellpadding="2">
+          <colgroup>
+            <col width="50">
+            <col width="">
+            <col width="150">
+            <col width="150">
+            <col width="130">
+          </colgroup>
+          <thead>
+            <tr align="right" valign="bottom">
+              <th>ID</th>
+              <th align="left">(Kategorie:) Seitentitel</th>
+              <th>Erstellt am</th>
+              <th>Veröffentlicht am</th>
+              <th>Aufrufe</th>
+            </tr>
+          </thead>
+          <tbody>
+|% for $pages -> $page {
+            <tr align="right" valign="top">
+              <td><% $page.page_id %></td>
+              <td align="left">
+                <span><% if $page.category.category_uri { $page.category.category; ': ' } %></span>
+                <a href="/acp/page/edit/<% $page.page_id %>" title="Seite bearbeiten"><% $page.subject %></a>
+                <a href="/-<% $page.page_id %>" target="_blank" title="Seite öffnen">[^]</a>
+                <br>
+                <small>
+                  <% $page.abstract %>
+                  <br>
+                  <span>Von <% $page.author.username %></span>
+|% if $page.last_edit_on {
+                  <span>| geändert am </span>
+                  <span><% $page.last_edit_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></span>
+|% }
+                </small>
+              </td>
+              <td>
+                <span><% $page.created_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y') %></span>
+                <br>
+                <span><% $page.created_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%k:%M Uhr') %></span>
+              </td>
+              <td>
+|% if $page.publication_on {
+                <span><% $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y') %></span>
+                <br>
+                <span><% $page.publication_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%k:%M Uhr') %></span>
+|% }
+              </td>
+              <td><% $page.has_views %></td>
+            </tr>
+|% }
+          </tbody>
+        </table>
+      </section>
