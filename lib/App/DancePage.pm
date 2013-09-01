@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.007;
+  our $VERSION = 0.008;
 }
 
 # Use only Dancer at this time.
@@ -1030,7 +1030,7 @@ sub get_gpw2014counter_route {
 
   if ( $format eq 'txt' ) {
     content_type 'text/plain';
-    header Expires => DateTime->from_epoch( time + 1 )->strftime('%a, %m %b %Y %H:%M:%S GMT');
+    header Expires => DateTime->from_epoch( epoch => time + 1 )->strftime('%a, %m %b %Y %H:%M:%S GMT');
     foreach my $type (qw( days hours minutes seconds )) {
       if ( $remaining->{$type} ) {
         return sprintf '%d %s', $remaining->{$type}, $language{$language}->{$type};
