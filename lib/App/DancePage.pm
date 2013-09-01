@@ -75,8 +75,10 @@ use Dancer::Plugin::Auth::Extensible qw(
 );
 use Dancer::Plugin::Browser::Detect qw( browser_detect );
 use DateTime qw();
+use DateTime::Duration qw();
 use Const::Fast qw( const );
 use XML::Simple qw();
+use GD qw( gdGiantFont );
 
 # Define lexical constants.
 const my $SECHK_KEY_UA          => '_sechk_ua';
@@ -988,6 +990,77 @@ sub get_permalink_route {
   return redirect sprintf '/%s/%s', $page->category->category_uri, $page->page_uri;
 }
 get q{/-:page_id} => \&get_permalink_route;
+
+############################################################################
+sub get_gpw2014counter_route {
+  my $language = param 'lang';
+  my $format   = param 'format';
+
+  my $remaining = {};
+  $remaining->{total_secs} = 1395820800 - time;
+  $remaining->{seconds}    = int( $remaining->{total_secs} % 60 );
+  $remaining->{minutes}    = int( ( $remaining->{total_secs} / 60 ) % 60 );
+  $remaining->{hours}      = int( ( $remaining->{total_secs} / ( 60 * 60 ) ) % 24 );
+  $remaining->{days}       = int( $remaining->{total_secs} / ( 24 * 60 * 60 ) );
+
+  my %language = (
+    de => {
+      seconds => 'Sekunden',
+      minutes => 'Minuten',
+      hours   => 'Stunden',
+      days    => 'Tage',
+    },
+    en => {
+      seconds => 'seconds',
+      minutes => 'minutes',
+      hours   => 'hours',
+      days    => 'days',
+    },
+  );
+
+  my $today_9hr = DateTime->now->set_time_zone('Europe/Berlin');
+  $today_9hr->set_hour(9);
+  $today_9hr->set_minute(0);
+  $today_9hr->set_second(0);
+  $today_9hr->set_time_zone( DateTime->now->time_zone );
+  my $tomorrow_9hr = $today_9hr->clone->add_duration( DateTime::Duration->new( days => 1 ) );
+
+
+  header 'Cache-Control' => 'public';
+
+  if ( $format eq 'txt' ) {
+    content_type 'text/plain';
+    header Expires => DateTime->from_epoch( time + 1 )->strftime('%a, %m %b %Y %H:%M:%S GMT');
+    foreach my $type (qw( days hours minutes seconds )) {
+      if ( $remaining->{$type} ) {
+        return sprintf '%d %s', $remaining->{$type}, $language{$language}->{$type};
+      }
+    }
+  }
+  elsif ( $format eq 'png' ) {
+    content_type 'image/png';
+    header Expires => $today_9hr->strftime('%a, %m %b %Y %H:%M:%S GMT')    if time <= $today_9hr->epoch;
+    header Expires => $tomorrow_9hr->strftime('%a, %m %b %Y %H:%M:%S GMT') if time > $today_9hr->epoch;
+    foreach my $type (qw( days hours minutes seconds )) {
+      if ( $remaining->{$type} ) {
+        my $text = sprintf '%d %s', $remaining->{$type}, $language{$language}->{$type};
+        my $im = GD::Image->new( 120, 20 );
+        my $white = $im->colorAllocate( 255, 255, 255 );
+        my $black = $im->colorAllocate( 0,   0,   0 );
+        my $red   = $im->colorAllocate( 255, 0,   0 );
+        my $blue  = $im->colorAllocate( 0,   0,   255 );
+        $im->transparent($white);
+        $im->interlaced('true');
+        $im->string( gdGiantFont, 4, 2, $text, $blue );
+        return $im->png;
+      }
+    }
+
+  }
+  status 404;
+  return;
+}
+get q{/gpw2014/counter-:lang.:format} => \&get_gpw2014counter_route;
 
 ############################################################################
 # Route handler: generic page.
