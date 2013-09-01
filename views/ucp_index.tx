@@ -1,0 +1,49 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject"><% $pagecategory %></h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="user_edit" action="<% $request.uri %>" method="post">
+          <table name="user_edit" border="1" width="100%" cellpadding="2">
+            <colgroup>
+              <col width="150">
+              <col width="">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>ID</th>
+                <td><% $logged_in_user.user_id %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Benutzername</th>
+                <td><input type="text" id="user_edit_username" name="username" value="<% $logged_in_user.username %>" required="required" autocomplete="off" autofocus="autofocus" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Passwort</th>
+                <td><input type="password" id="user_edit_password" name="password" value="" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>E-Mail Adresse</th>
+                <td><input type="text" id="user_edit_email" name="email" value="<% $logged_in_user.email %>" required="required" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Registriert am</th>
+                <td><% $logged_in_user.signup_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Zuletzt eingeloggt am</th>
+                <td><% $logged_in_user.last_login_on.clone.set_time_zone($timezone).set_locale($locale).strftime('%e. %B %Y, %k:%M Uhr') %></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <td>
+                  <input type="submit" value="Benutzer ändern">
+                  <input type="reset" value="Änderungen zurücksetzen">
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </section>

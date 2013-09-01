@@ -70,7 +70,8 @@ BEGIN {
 # Use other module.
 use Dancer::Plugin::DBIC qw( schema rset );
 use Dancer::Plugin::Auth::Extensible qw(
-  logged_in_user authenticate_user user_has_role require_role require_any_role
+  logged_in_user authenticate_user user_has_role require_role
+  require_login require_any_role
 );
 use Dancer::Plugin::Browser::Detect qw( browser_detect );
 use DateTime qw();
@@ -902,6 +903,35 @@ sub get_acp_page_delete_route {
 }
 get q{/acp/page/delete/:page_id} => require_any_role [qw( admin page_admin page_author )] =>
   \&get_acp_page_delete_route;
+
+############################################################################
+# Route handler: acp index page.
+sub get_ucp_route {
+  return template 'ucp_index', {
+    category     => { category => 'Mein Konto', category_uri => 'mein-konto' },
+    pagecategory => 'Mein Konto',
+    pageabstract => 'Hier können Sie ihre Benutzerdaten verwalten',
+    robots       => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/mein-konto} => require_login \&get_ucp_route;
+
+############################################################################
+# Route handler: acp index page.
+sub post_ucp_route {
+  return redirect '/mein-konto' if !scalar keys %{ params() };
+
+  logged_in_user->update( {
+    username => params->{username},
+    email    => params->{email},
+    ( params->{password} ? ( password => params->{password} ) : () ),
+  } );
+
+  return redirect '/mein-konto';
+}
+post q{/mein-konto} => require_login \&post_ucp_route;
 
 ############################################################################
 # Route handler: change session layout.
