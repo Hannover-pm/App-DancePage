@@ -1,18 +1,29 @@
-|% if $settings.environment == 'production' {
-<!-- Piwik -->
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(["trackPageView"]);
-  _paq.push(["enableLinkTracking"]);
-
-  (function() {
-    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://webstat.dev5media.de/";
-    _paq.push(["setTrackerUrl", u+"piwik.php"]);
-    _paq.push(["setSiteId", "10"]);
-    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<noscript><img src="https://webstat.dev5media.de/piwik.php?idsite=10&amp;rec=1" style="border:0" alt="" /></noscript>
-<!-- End Piwik Code -->
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+|% for $piwik_cvar -> $cvar {
+      _paq.push(['setCustomVariable','<% $cvar.index %>','<% $cvar.name %>','<% $cvar.value %>','<% if $cvar.scope { $cvar.scope } else { 'visit' } %>']); 
 |% }
+|% for $piwik_goal -> $goal {
+      _paq.push(['trackGoal','<% $goal.id %>'<% if $goal.revenue { ",'" | raw; $goal.revenue; "'" | raw } %>]); 
+|% }
+|% if $piwik_search {
+      _paq.push(['trackSiteSearch','<% $piwik_search.query %>','<% $piwik_search.category %>','<% $piwik_search.count %>']); 
+|% } else {
+      _paq.push(["trackPageView"]);
+|% }
+      _paq.push(["enableLinkTracking"]);
+|% if $settings.environment == 'production' {
+      (function() {
+        var u=(("https:" == document.location.protocol) ? "https" : "http") + "://webstat.dev5media.de/";
+        _paq.push(["setTrackerUrl", u+"piwik.php"]);
+        _paq.push(["setSiteId", "10"]);
+        var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+        g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+|% }
+      })();
+    </script>
+|% if $settings.environment == 'production' {
+    <noscript><img src="https://webstat.dev5media.de/piwik.php?idsite=10&amp;rec=1" style="border:0" alt="" /></noscript>
+|% }
+    <!-- End Piwik Code -->

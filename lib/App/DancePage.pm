@@ -427,6 +427,27 @@ sub default_token_hook {
 
   $tokens->{robots} = 'index,follow,archive';
 
+  $tokens->{piwik_cvar} ||= [];
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 1,
+    name  => 'Besucherstatus',
+    value => ( logged_in_user() ? 'Angemeldet' : 'Gast' ),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 2,
+    name  => 'Kategorie',
+    value => ( $tokens->{pagecategory} || 'Generisch' ),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 1,
+    name  => 'Besucherstatus',
+    value => 'Registriert',
+    scope => 'visit',
+    }
+    if logged_in_user;
+
   return;
 }
 hook before_template_render => \&default_token_hook;
