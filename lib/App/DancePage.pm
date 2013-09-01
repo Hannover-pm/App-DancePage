@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.005;
+  our $VERSION = 0.006;
 }
 
 # Use only Dancer at this time.
@@ -438,6 +438,12 @@ sub default_token_hook {
     index => 2,
     name  => 'Kategorie',
     value => ( $tokens->{pagecategory} || 'Generisch' ),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
+    index => 3,
+    name  => 'Layout',
+    value => var('layout'),
     scope => 'page',
     };
   push @{ $tokens->{piwik_cvar} }, {
