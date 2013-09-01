@@ -803,6 +803,26 @@ post q{/acp/page/create} => require_any_role [qw( admin page_admin page_author )
   \&post_acp_page_create_route;
 
 ############################################################################
+# Route handler: acp delete page.
+sub get_acp_page_delete_route {
+
+  my $page = rset('Page')->search( { page_id => params->{page_id} } )->single;
+
+  if ( !user_has_role('admin')
+    && !user_has_role('page_admin')
+    && $page->author_id != logged_in_user->user_id )
+  {
+    return redirect '/login/denied';
+  }
+  
+  $page->delete;
+  
+  return redirect '/acp/page/list';
+}
+get q{/acp/page/delete/:page_id} => require_any_role [qw( admin page_admin page_author )] =>
+  \&get_acp_page_delete_route;
+
+############################################################################
 # Route handler: change session layout.
 sub get_layout_route {
   return not_found_page() if !params->{layout};

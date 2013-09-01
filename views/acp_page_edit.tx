@@ -90,4 +90,8 @@
             </tfoot>
           </table>
         </form>
+        <fieldset style="border: thick solid red;">
+          <legend style="padding: 0 .5em">Dange Area</legend>
+          <p><a href="/acp/page/delete/<% $editpage.page_id %>">Diese Seite permanent löschen</a></p>
+        </fieldset>
       </section>
