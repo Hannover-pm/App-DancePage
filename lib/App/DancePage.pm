@@ -441,6 +441,12 @@ sub default_token_hook {
     scope => 'page',
     };
   push @{ $tokens->{piwik_cvar} }, {
+    index => 3,
+    name  => 'Layout',
+    value => var('layout'),
+    scope => 'page',
+    };
+  push @{ $tokens->{piwik_cvar} }, {
     index => 1,
     name  => 'Besucherstatus',
     value => 'Registriert',
