@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /acp
+Disallow: /acp/*
+Disallow: /mein-konto
+Disallow: /login
+Disallow: /login2
+Disallow: /logout
+Disallow: /logout2
+Allow: /
