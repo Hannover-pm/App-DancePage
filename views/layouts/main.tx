@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="de">
   <head>
     <meta http-equiv="content-type" content="<% $content_type %>; charset=<% $content_charset %>">
+    <meta http-equiv="content-language" content="de">
     <base href="<% $request.uri_base %>/" target="_top">
     <script type="text/javascript" src="/scripts/modernizr.js"></script>
     <meta charset="<% $content_charset %>">
@@ -10,6 +11,7 @@
     <meta name="keywords" content="<% if $pagekeywords && $pagekeywords.size { $pagekeywords.join(',') } %>">
     <meta name="author" content="<% if $pageauthor { $pageauthor } %>">
     <meta name="application-name" content="<% $settings.appname %>">
+    <meta name="language" content="de">
     <meta name="robots" content="<% $robots %>">
     <link rel="canonical" href="http://hannover.pm<% $request.uri %>">
     <link rel="shortcut icon" href="/favicon.ico">
