@@ -30,6 +30,7 @@ The following Perl modules are required:
 * [YAML](http://p3rl.org/YAML)
 * [XML::Simple](http://p3rl.org/XML::Simple)
 * [GD](http://p3rl.org/GD)
+* [JavaScript::Value::Escape](http://p3rl.org/JavaScript::Value::Escape)
 
 For testing purposes additionally:
 

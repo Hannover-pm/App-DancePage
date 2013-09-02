@@ -8,7 +8,7 @@ use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
-  our $VERSION = 0.009;
+  our $VERSION = 0.010;
 }
 
 # Use only Dancer at this time.
@@ -79,6 +79,8 @@ use DateTime::Duration qw();
 use Const::Fast qw( const );
 use XML::Simple qw();
 use GD qw( gdGiantFont );
+use JSON qw();
+use JavaScript::Value::Escape qw( javascript_value_escape );
 
 # Define lexical constants.
 const my $SECHK_KEY_UA          => '_sechk_ua';
@@ -429,32 +431,40 @@ sub default_token_hook {
 
   $tokens->{robots} = 'index,follow,archive';
 
-  $tokens->{piwik_cvar} ||= [];
-  push @{ $tokens->{piwik_cvar} }, {
-    index => 1,
-    name  => 'Besucherstatus',
-    value => ( logged_in_user() ? 'Angemeldet' : 'Gast' ),
-    scope => 'page',
-    };
-  push @{ $tokens->{piwik_cvar} }, {
-    index => 2,
-    name  => 'Kategorie',
-    value => ( $tokens->{pagecategory} || 'Generisch' ),
-    scope => 'page',
-    };
-  push @{ $tokens->{piwik_cvar} }, {
-    index => 3,
-    name  => 'Layout',
-    value => var('layout'),
-    scope => 'page',
-    };
-  push @{ $tokens->{piwik_cvar} }, {
-    index => 1,
-    name  => 'Besucherstatus',
-    value => 'Registriert',
-    scope => 'visit',
-    }
+  $tokens->{piwik_cvar} ||= {};
+  $tokens->{piwik_cvar}->{page}->{1} = [
+    'Besucherstatus',
+    ( logged_in_user() ? 'Angemeldet' : 'Gast' ),
+  ];
+  $tokens->{piwik_cvar}->{page}->{2} = [
+    'Kategorie',
+    ( $tokens->{pagecategory} || 'Generisch' ),
+  ];
+  $tokens->{piwik_cvar}->{page}->{3} = [
+    'Layout',
+    var('layout'),
+  ];
+  $tokens->{piwik_cvar}->{visit}->{1} = [
+    'Besucherstatus',
+    'Registriert',
+    ]
     if logged_in_user;
+
+  $tokens->{to_json} = sub {
+    my ( $data, %opts ) = @_;
+    my $json = JSON->new;
+    $json->utf8(1)->pretty(0)->space_before(0)->space_after(0);
+    $json->$_( $opts{$_} ) for ( keys %opts );
+    return $json->encode($data);
+  };
+
+  $tokens->{_title} = setting('sitename') || setting('appname');
+  $tokens->{_title} .= ' ' . $tokens->{pagecategory} if $tokens->{pagecategory};
+  $tokens->{_title} .= ': ' . $tokens->{pagesubject} if $tokens->{pagesubject};
+
+  $tokens->{js_escape} = sub {
+    return javascript_value_escape( join '', @_ );
+  };
 
   return;
 }
