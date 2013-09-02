@@ -76,6 +76,23 @@
               </ul>
             </section>
             <div class="columns2_clearing"></div>
+            <section>
+              <h4>Webstatistik</h4>
+              <section class="columns2 widgetIframe">
+                  <iframe width="100%" height="350" src="http://webstat.dev5media.de/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=10&period=range&date=previous30&disableLink=1&widget=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+              </section>
+              <section class="columns2 widgetIframe">
+                  <iframe width="100%" height="350" src="http://webstat.dev5media.de/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite=10&period=range&date=previous30&disableLink=1&widget=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+              </section>
+              <div class="columns2_clearing"></div>
+              <section class="columns2 widgetIframe">
+                  <iframe width="100%" height="350" src="http://webstat.dev5media.de/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referers&actionToWidgetize=getRefererType&idSite=10&period=range&date=previous30&disableLink=1&widget=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+              </section>
+              <section class="columns2 widgetIframe">
+                  <iframe width="100%" height="350" src="http://webstat.dev5media.de/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referers&actionToWidgetize=getAll&idSite=10&period=range&date=previous30&disableLink=1&widget=1" scrolling="auto" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+              </section>
+              <div class="columns2_clearing"></div>
+            </section>
           </section>
         </section>
       </section>
