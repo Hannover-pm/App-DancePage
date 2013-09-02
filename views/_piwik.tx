@@ -1,14 +1,17 @@
     <!-- Piwik -->
     <script type="text/javascript">
       var _paq = _paq || [];
-|% for $piwik_cvar -> $cvar {
-      _paq.push(['setCustomVariable','<% $cvar.index %>','<% $cvar.name %>','<% $cvar.value %>','<% if $cvar.scope { $cvar.scope } else { 'visit' } %>']); 
-|% }
-|% for $piwik_goal -> $goal {
-      _paq.push(['trackGoal','<% $goal.id %>'<% if $goal.revenue { ",'" | raw; $goal.revenue; "'" | raw } %>]); 
+      _paq.push(["setDocumentTitle","<% $js_escape($_title) | raw %>"]);
+|% if $piwik_cvar.page { for $piwik_cvar.page.keys() -> $index {
+      _paq.push(['setCustomVariable','<% $js_escape($index) | raw %>','<% $js_escape($piwik_cvar.page[$index][0]) | raw %>','<% $js_escape($piwik_cvar.page[$index][1]) | raw %>','page']); 
+|% } } if $piwik_cvar.visit { for $piwik_cvar.visit.keys() -> $index {
+      _paq.push(['setCustomVariable','<% $js_escape($index) | raw %>','<% $js_escape($piwik_cvar.page[$index][0]) | raw %>','<% $js_escape($piwik_cvar.page[$index][1]) | raw %>','visit']); 
+|% } }
+|% if $piwik_goal {
+      _paq.push(['trackGoal','<% $js_escape($piwik_goal.id) | raw %>'<% if $piwik_goal.revenue { ",'" | raw; $js_escape($piwik_goal.revenue) | raw; "'" | raw } %>]); 
 |% }
 |% if $piwik_search {
-      _paq.push(['trackSiteSearch','<% $piwik_search.query %>','<% $piwik_search.category %>','<% $piwik_search.count %>']); 
+      _paq.push(['trackSiteSearch','<% $js_escape($piwik_search.query) | raw %>','<% $js_escape($piwik_search.category) | raw %>','<% $js_escape($piwik_search.count) | raw %>']); 
 |% } else {
       _paq.push(["trackPageView"]);
 |% }
@@ -24,6 +27,6 @@
       })();
     </script>
 |% if $settings.environment == 'production' {
-    <noscript><img src="https://webstat.dev5media.de/piwik.php?idsite=10&amp;rec=1" style="border:0" alt="" /></noscript>
+    <noscript><img src="http<% if $request.secure { 's' }  %>://webstat.dev5media.de/piwik.php?idsite=10&amp;rec=1&amp;apiv=1<% '&amp;action_name=' | raw; $_title | uri %><% '&amp;url=' | raw; $request.uri_base ~ $request.uri | uri %><% if $request.referer { '&amp;urlref=' | raw; $request.referer | uri } %><% if $request.agent { '&amp;ua=' | raw; $request.agent | uri } %><% if $request.accept_language { '&amp;lang=' | raw; $request.accept_language | uri } %><% if $piwik_goal && piwik_goal.id { '&amp;idgoal=' | raw; $piwik_goal.id | uri; if $piwik_goal.revenue { '&amp;revenue=' | raw; $revenue.id | uri } } %><% if $piwik_cvar.visit { '&amp;_cvar=' | raw; $to_json($piwik_cvar.visit) | uri } %><% if $piwik_cvar.page { '&amp;cvar=' | raw; $to_json($piwik_cvar.page) | uri } %><% if $piwik_search && $piwik_search.query { '&amp;search=' | raw; $piwik_search.query | uri; if $piwik_search.category { '&amp;search_cat=' | raw; $piwik_search.category | uri } if $piwik_search.count { '&amp;search_count=' | raw; $piwik_search.count | uri } } %>" style="border:0" alt="" /></noscript>
 |% }
     <!-- End Piwik Code -->
