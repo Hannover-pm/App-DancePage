@@ -11,6 +11,7 @@
     <meta name="author" content="<% if $pageauthor { $pageauthor } %>">
     <meta name="application-name" content="<% $settings.appname %>">
     <meta name="robots" content="<% $robots %>">
+    <link rel="canonical" href="http://hannover.pm<% $request.uri %>">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/styles/normalize.css">
     <link rel="stylesheet" type="text/css" href="/styles/mobile.css">
