@@ -459,7 +459,7 @@ sub default_token_hook {
   };
 
   $tokens->{_title} = setting('sitename') || setting('appname');
-  $tokens->{_title} .= $tokens->{pagecategory} if $tokens->{pagecategory};
+  $tokens->{_title} .= ' ' . $tokens->{pagecategory} if $tokens->{pagecategory};
   $tokens->{_title} .= ': ' . $tokens->{pagesubject} if $tokens->{pagesubject};
 
   $tokens->{js_escape} = sub {
