@@ -66,6 +66,7 @@
     </div>
     <footer id="footer" role="contentinfo">
       <span>(c) 2013, Hannover.pm. All rights reserved.</span>
+      <span>The use of the camel image in association with the Perl language is a trademark of O'Reilly & Associates, Inc. Used with permission.</span>
       <a href="/-layout-main">Desktop Ansicht</a>
     </footer>
     <script type="text/javascript">
