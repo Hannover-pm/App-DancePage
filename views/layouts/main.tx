@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="<% $content_type %>; charset=<% $content_charset %>">
     <meta http-equiv="content-language" content="de">
-    <base href="<% $request.uri_base %>/" target="_top">
+    <base href="<% $request.uri_base %>/">
     <script type="text/javascript" src="/scripts/modernizr.js"></script>
     <meta charset="<% $content_charset %>">
     <title><% if $settings.sitename { $settings.sitename } else { $settings.appname } %><% if $pagecategory { ' '; $pagecategory } %><% if $pagesubject { ': '; $pagesubject } %></title>
