@@ -53,6 +53,13 @@ There are currently 3 checks to prevent session stealing and CSRF:
 * void session when remove address is switching
 * flag request when possible CSRF attack was detected
 
+Automated testing
+-----------------
+
+This repository have automated testing enabled for the master branch. The test reports are available at:
+
+http://ci.dev5media.de/job/Hannover.pm%20Website/
+
 Copyright and license
 ---------------------
 
