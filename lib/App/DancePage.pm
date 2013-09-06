@@ -120,7 +120,8 @@ sub setup {
       rset('DbInfo')->create( { property => 'schema_version', value => $schema_version } );
 
       # Register default roles.
-      rset('Role')->create( { role => $_ } ) for (qw( admin page_admin page_author page_comment ));
+      rset('Role')->create( { role => $_ } )
+        for (qw( admin broadcast page_admin page_author page_comment ));
 
       # Register default users.
       my $admin_user =
@@ -915,7 +916,7 @@ get q{/acp/page/create} => require_any_role [qw( admin page_admin page_author )]
 # Route handler: acp edit page.
 sub post_acp_page_create_route {
 
-  rset('Page')->create( {
+  my $page = rset('Page')->create( {
     category_id    => params->{category_id},
     subject        => params->{subject},
     abstract       => params->{abstract},
@@ -927,6 +928,18 @@ sub post_acp_page_create_route {
   } );
 
   generate_sitemap();
+
+  my ( $message, $url );
+  if ( !$page->category->category_uri ) {
+    $message = sprintf '%s: %s', setting('sitename'), $page->subject;
+    $url = sprintf 'http://hannover.pm/%s', $page->page_uri;
+  }
+  else {
+    $message = sprintf '%s %s: %s', setting('sitename'), $page->category->category, $page->subject;
+    $url = sprintf 'http://hannover.pm/%s/%s', $page->category->category_uri, $page->page_uri;
+  }
+
+  tweet_message("$message\n$url");
 
   return redirect '/acp/page/list';
 }
