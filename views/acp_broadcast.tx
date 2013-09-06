@@ -12,7 +12,7 @@
             <tbody>
               <tr align="left" valign="top">
                 <th>Nachricht</th>
-                <td><input type="text" name="message" maxlength="140" autocomplete="off"></td>
+                <td><input type="text" name="message" maxlength="140" autocomplete="off" style="width:99%"></td>
               </tr>
               <tr align="left" valign="top">
                 <th>Kanäle</th>
