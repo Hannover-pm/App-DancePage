@@ -732,7 +732,7 @@ sub post_acp_user_edit_route {
   }
   $user->set_roles($roles);
 
-  return redirect request->uri;
+  return redirect '/acp/user/list';
 }
 post q{/acp/user/edit/:user_id} => require_role admin => \&post_acp_user_edit_route;
 
@@ -777,7 +777,7 @@ sub post_acp_user_create_route {
   }
   $user->set_roles($roles);
 
-  return redirect sprintf '/acp/user/list';
+  return redirect '/acp/user/list';
 }
 post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
 
@@ -990,7 +990,7 @@ get q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&get_acp_b
 sub post_acp_broadcast_route {
   return redirect '/acp/broadcast'   if !params->{message};
   tweet_message( params->{message} ) if params->{twitter};
-  return redirect '/acp/broadcast';
+  return redirect '/acp';
 }
 post q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&post_acp_broadcast_route;
 
