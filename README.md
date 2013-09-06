@@ -31,11 +31,18 @@ The following Perl modules are required:
 * [XML::Simple](http://p3rl.org/XML::Simple)
 * [GD](http://p3rl.org/GD)
 * [JavaScript::Value::Escape](http://p3rl.org/JavaScript::Value::Escape)
+* [Net::Twitter](http://p3rl.org/Net::Twitter)
+* [LWP::Protocol::https](http://p3rl.org/LWP::Protocol::https)
+* [Net::SSLeay](http://p3rl.org/Net::SSLeay)
 
 For testing purposes additionally:
 
 * [Test::More](http://p3rl.org/Test::More)
 * [Test::NoWarnings](http://p3rl.org/Test::NoWarnings)
+
+The following software have to be installed:
+
+* [OpenSSL](http://www.openssl.org/)
 
 Security checks performed for every route request
 -------------------------------------------------

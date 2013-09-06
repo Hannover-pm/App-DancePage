@@ -13,6 +13,7 @@ BEGIN {
 
 # Use only Dancer at this time.
 use Dancer qw( :syntax );
+use YAML qw();
 
 # Configuration fixes for Dancer plugins.
 BEGIN {
@@ -20,7 +21,6 @@ BEGIN {
   # Unit Test.
   if ( exists $INC{'Test/More.pm'} || exists $INC{'Dancer/Test.pm'} ) {
     debug 'Apply fixes: Unit Test';
-    require YAML;
     my $config_hash = YAML::LoadFile('config.yml');
 
     $config_hash->{environment} = 'development';  # Force development environment.
@@ -81,6 +81,8 @@ use XML::Simple qw();
 use GD qw( gdGiantFont );
 use JSON qw();
 use JavaScript::Value::Escape qw( javascript_value_escape );
+use Net::Twitter qw();
+use Storable qw( store retrieve );
 
 # Define lexical constants.
 const my $SECHK_KEY_UA          => '_sechk_ua';
@@ -93,6 +95,8 @@ const my $BLOG_CATID            => 2;
 const my $METTINGS_CATID        => 3;
 const my $HTTP_STATUS_NOT_FOUND => 404;
 const my $SESS_KEY_LAYOUT       => 'layout';
+const my $TWITTER_CREDFILE      => 'twitter.yml';
+const my $TWITTER_TOKENFILE     => '.twitter_token';
 
 ############################################################################
 # Initial environment setup.
@@ -950,6 +954,34 @@ get q{/acp/page/delete/:page_id} => require_any_role [qw( admin page_admin page_
   \&get_acp_page_delete_route;
 
 ############################################################################
+# Route handler: acp broadcast.
+sub get_acp_broadcast_route {
+  return template 'acp_broadcast', {
+    page => {
+      page_uri => 'acp_broadcast', subject => 'Broadcast senden',
+      category => { category => 'ACP', category_uri => 'acp' }
+    },
+    pagecategory => 'ACP',
+    pagesubject  => 'Broadcast senden',
+    pageabstract =>
+      'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
+    robots => 'noindex,nofollow,noarchive',
+    }, {
+    layout => var('layout'),
+    };
+}
+get q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&get_acp_broadcast_route;
+
+############################################################################
+# Route handler: acp broadcast.
+sub post_acp_broadcast_route {
+  return redirect '/acp/broadcast'   if !params->{message};
+  tweet_message( params->{message} ) if params->{twitter};
+  return redirect '/acp/broadcast';
+}
+post q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&post_acp_broadcast_route;
+
+############################################################################
 # Route handler: acp index page.
 sub get_ucp_route {
   return template 'ucp_index', {
@@ -1144,6 +1176,26 @@ sub any_not_found_route {
     };
 }
 any qr{.*} => \&any_not_found_route;
+
+############################################################################
+sub tweet_message {
+  my ($message) = @_;
+  my $consumer_credentials = YAML::LoadFile($TWITTER_CREDFILE);
+  my $access_tokens = eval { retrieve($TWITTER_TOKENFILE) } || [];
+  if ( scalar @{$access_tokens} ) {
+    return eval {
+      my $nt = Net::Twitter->new( traits => [qw/API::RESTv1_1/], %$consumer_credentials );
+      $nt->access_token( $access_tokens->[0] );
+      $nt->access_token_secret( $access_tokens->[1] );
+      $nt->update($message);
+      1;
+    } || 0;
+  }
+  else {
+    error 'Twitter authorization required!';
+    return 0;
+  }
+}
 
 ############################################################################
 1;
