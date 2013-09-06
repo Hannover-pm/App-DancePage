@@ -27,18 +27,21 @@
 -->
 |% }
           </div>
-|% if $user_has_role('admin') {
           <div class="columns2">
             <ul>
+|% if $user_has_any_role(['admin','broadcast']) {
+              <li><strong><a href="/acp/broadcast">Broadcast senden (Twitter, Facebook, etc.)</a></strong></li>
+|% }
+|% if $user_has_role('admin') {
               <li><strong>Benutzer</strong>
                 <ul>
                   <li><a href="/acp/user/list">Alle Benutzer auflisten</a></li>
                   <li><a href="/acp/user/create">Neuen Benutzer anlegen</a></li>
                 </ul>
               </li>
+|% }
             </ul>
           </div>
-|% }
           <div class="columns2_clearing"></div>
         </section>
         <section>

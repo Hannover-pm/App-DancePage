@@ -1,0 +1,35 @@
+      <section role="main">
+        <header>
+          <h2 id="pagesubject">Admin Control Panel</h2>
+          <p id="pageabstract"><% $pageabstract %></p>
+        </header>
+        <form name="broadcast" action="<% $request.uri %>" method="post">
+          <table name="broadcast" border="1" width="100%" cellpadding="2">
+            <colgroup>
+              <col width="150">
+              <col width="">
+            </colgroup>
+            <tbody>
+              <tr align="left" valign="top">
+                <th>Nachricht</th>
+                <td><input type="text" name="message" maxlength="140" autocomplete="off" style="width:99%"></td>
+              </tr>
+              <tr align="left" valign="top">
+                <th>Kanäle</th>
+                <td>
+                  <label style="display:block"><input type="checkbox" name="twitter" value="1" checked="checked" autocomplete="off"> Twitter</label>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th></th>
+                <td>
+                  <input type="submit" value="Broadcast senden">
+                  <input type="reset" value="Änderungen zurücksetzen">
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </form>
+      </section>
