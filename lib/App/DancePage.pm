@@ -654,6 +654,7 @@ sub get_acp_route {
     toppages     => [ $toppages->all ],
     pendingpages => [ $pendingpages->all ],
     newusers     => [ $newusers->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -705,6 +706,7 @@ sub get_acp_user_edit_route {
     robots => 'noindex,nofollow,noarchive',
     user   => $user,
     roles  => [ $roles->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -753,6 +755,7 @@ sub get_acp_user_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     roles  => [ $roles->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -816,6 +819,7 @@ sub get_acp_page_list_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     pages  => [ $generic_pages->all, $pages->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -850,6 +854,7 @@ sub get_acp_page_edit_route {
     robots               => 'noindex,nofollow,noarchive',
     editpage             => $page,
     avaliable_categories => [ $categories->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -905,6 +910,7 @@ sub get_acp_page_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots               => 'noindex,nofollow,noarchive',
     avaliable_categories => [ $categories->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -1184,6 +1190,7 @@ sub any_not_found_route {
   return template 'not_found', {
     pagesubject  => 'Error 404',
     pageabstract => 'Die gewünschte Seite konnte nicht gefunden werden',
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
