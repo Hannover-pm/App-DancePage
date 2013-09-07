@@ -406,8 +406,8 @@ sub default_token_hook {
   $tokens->{content_charset} ||= setting 'charset';
 
   $tokens->{now}      = var 'now';
-  $tokens->{timezone} = 'Europe/Berlin';
-  $tokens->{locale}   = 'de_DE';
+  $tokens->{timezone} ||= 'Europe/Berlin';
+  $tokens->{locale}   ||= 'de_DE';
 
   $tokens->{logged_in_user} = logged_in_user;
   $tokens->{user_has_role}  = sub {
@@ -434,7 +434,7 @@ sub default_token_hook {
     return [ map { $_->$field } $rset->all ];
   };
 
-  $tokens->{robots} = 'index,follow,archive';
+  $tokens->{robots} ||= 'index,follow,archive';
 
   $tokens->{piwik_cvar} ||= {};
   $tokens->{piwik_cvar}->{page}->{1} = [
