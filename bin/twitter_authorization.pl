@@ -9,7 +9,7 @@ use Net::Twitter;
 use Storable;
 use YAML;
 
-my $consumer_credentials = YAML::LoadFile('.twitter_credentials');
+my $consumer_credentials = YAML::LoadFile('twitter.yml');
 my $datafile             = '.twitter_token';
 
 my $nt = Net::Twitter->new( traits => [qw/API::RESTv1_1/], %$consumer_credentials );

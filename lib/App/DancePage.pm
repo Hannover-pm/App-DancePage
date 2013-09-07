@@ -406,8 +406,8 @@ sub default_token_hook {
   $tokens->{content_charset} ||= setting 'charset';
 
   $tokens->{now}      = var 'now';
-  $tokens->{timezone} = 'Europe/Berlin';
-  $tokens->{locale}   = 'de_DE';
+  $tokens->{timezone} ||= 'Europe/Berlin';
+  $tokens->{locale}   ||= 'de_DE';
 
   $tokens->{logged_in_user} = logged_in_user;
   $tokens->{user_has_role}  = sub {
@@ -434,7 +434,7 @@ sub default_token_hook {
     return [ map { $_->$field } $rset->all ];
   };
 
-  $tokens->{robots} = 'index,follow,archive';
+  $tokens->{robots} ||= 'index,follow,archive';
 
   $tokens->{piwik_cvar} ||= {};
   $tokens->{piwik_cvar}->{page}->{1} = [
@@ -654,6 +654,7 @@ sub get_acp_route {
     toppages     => [ $toppages->all ],
     pendingpages => [ $pendingpages->all ],
     newusers     => [ $newusers->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -705,6 +706,7 @@ sub get_acp_user_edit_route {
     robots => 'noindex,nofollow,noarchive',
     user   => $user,
     roles  => [ $roles->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -732,7 +734,7 @@ sub post_acp_user_edit_route {
   }
   $user->set_roles($roles);
 
-  return redirect request->uri;
+  return redirect '/acp/user/list';
 }
 post q{/acp/user/edit/:user_id} => require_role admin => \&post_acp_user_edit_route;
 
@@ -753,6 +755,7 @@ sub get_acp_user_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     roles  => [ $roles->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -777,7 +780,7 @@ sub post_acp_user_create_route {
   }
   $user->set_roles($roles);
 
-  return redirect sprintf '/acp/user/list';
+  return redirect '/acp/user/list';
 }
 post q{/acp/user/create} => require_role admin => \&post_acp_user_create_route;
 
@@ -816,6 +819,7 @@ sub get_acp_page_list_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     pages  => [ $generic_pages->all, $pages->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -850,6 +854,7 @@ sub get_acp_page_edit_route {
     robots               => 'noindex,nofollow,noarchive',
     editpage             => $page,
     avaliable_categories => [ $categories->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -905,6 +910,7 @@ sub get_acp_page_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots               => 'noindex,nofollow,noarchive',
     avaliable_categories => [ $categories->all ],
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -990,7 +996,7 @@ get q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&get_acp_b
 sub post_acp_broadcast_route {
   return redirect '/acp/broadcast'   if !params->{message};
   tweet_message( params->{message} ) if params->{twitter};
-  return redirect '/acp/broadcast';
+  return redirect '/acp';
 }
 post q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&post_acp_broadcast_route;
 
@@ -1184,6 +1190,7 @@ sub any_not_found_route {
   return template 'not_found', {
     pagesubject  => 'Error 404',
     pageabstract => 'Die gewünschte Seite konnte nicht gefunden werden',
+    robots       => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
