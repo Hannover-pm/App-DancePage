@@ -5,7 +5,7 @@
 |% if $piwik_cvar.page { for $piwik_cvar.page.keys() -> $index {
       _paq.push(['setCustomVariable','<% $js_escape($index) | raw %>','<% $js_escape($piwik_cvar.page[$index][0]) | raw %>','<% $js_escape($piwik_cvar.page[$index][1]) | raw %>','page']); 
 |% } } if $piwik_cvar.visit { for $piwik_cvar.visit.keys() -> $index {
-      _paq.push(['setCustomVariable','<% $js_escape($index) | raw %>','<% $js_escape($piwik_cvar.page[$index][0]) | raw %>','<% $js_escape($piwik_cvar.page[$index][1]) | raw %>','visit']); 
+      _paq.push(['setCustomVariable','<% $js_escape($index) | raw %>','<% $js_escape($piwik_cvar.visit[$index][0]) | raw %>','<% $js_escape($piwik_cvar.visit[$index][1]) | raw %>','visit']); 
 |% } }
 |% if $piwik_goal {
       _paq.push(['trackGoal','<% $js_escape($piwik_goal.id) | raw %>'<% if $piwik_goal.revenue { ",'" | raw; $js_escape($piwik_goal.revenue) | raw; "'" | raw } %>]); 
