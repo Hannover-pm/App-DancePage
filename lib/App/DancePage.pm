@@ -83,6 +83,7 @@ use JSON qw();
 use JavaScript::Value::Escape qw( javascript_value_escape );
 use Net::Twitter qw();
 use Storable qw( store retrieve );
+use MIME::Lite qw();
 
 # Define lexical constants.
 const my $SECHK_KEY_UA          => '_sechk_ua';
@@ -405,7 +406,7 @@ sub default_token_hook {
   $tokens->{content_type} ||= content_type || setting 'content_type';
   $tokens->{content_charset} ||= setting 'charset';
 
-  $tokens->{now}      = var 'now';
+  $tokens->{now} = var 'now';
   $tokens->{timezone} ||= 'Europe/Berlin';
   $tokens->{locale}   ||= 'de_DE';
 
@@ -706,7 +707,7 @@ sub get_acp_user_edit_route {
     robots => 'noindex,nofollow,noarchive',
     user   => $user,
     roles  => [ $roles->all ],
-    robots       => 'noindex,nofollow,noarchive',
+    robots => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -755,7 +756,7 @@ sub get_acp_user_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     roles  => [ $roles->all ],
-    robots       => 'noindex,nofollow,noarchive',
+    robots => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -819,7 +820,7 @@ sub get_acp_page_list_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots => 'noindex,nofollow,noarchive',
     pages  => [ $generic_pages->all, $pages->all ],
-    robots       => 'noindex,nofollow,noarchive',
+    robots => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -854,7 +855,7 @@ sub get_acp_page_edit_route {
     robots               => 'noindex,nofollow,noarchive',
     editpage             => $page,
     avaliable_categories => [ $categories->all ],
-    robots       => 'noindex,nofollow,noarchive',
+    robots               => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -910,7 +911,7 @@ sub get_acp_page_create_route {
       'Über das Admin Control Panel (ACP) können Sie den gesamten Internetauftritt verwalten',
     robots               => 'noindex,nofollow,noarchive',
     avaliable_categories => [ $categories->all ],
-    robots       => 'noindex,nofollow,noarchive',
+    robots               => 'noindex,nofollow,noarchive',
     }, {
     layout => var('layout'),
     };
@@ -935,17 +936,54 @@ sub post_acp_page_create_route {
 
   generate_sitemap();
 
-  my ( $message, $url );
+  my ( $short_message, $url );
   if ( !$page->category->category_uri ) {
-    $message = sprintf '%s: %s', setting('sitename'), $page->subject;
+    $short_message = sprintf '%s: %s', setting('sitename'), $page->subject;
     $url = sprintf 'http://hannover.pm/%s', $page->page_uri;
   }
   else {
-    $message = sprintf '%s %s: %s', setting('sitename'), $page->category->category, $page->subject;
+    $short_message = sprintf '%s %s: %s', setting('sitename'), $page->category->category,
+      $page->subject;
     $url = sprintf 'http://hannover.pm/%s/%s', $page->category->category_uri, $page->page_uri;
   }
 
-  tweet_message("$message\n$url");
+  my $author  = logged_in_user->username;
+  my $subject = $page->subject;
+  my $full_message;
+  $full_message .= <<"_MAILMSG_";
+Hallo zusammen,
+
+gerade eben wurde ein neuer Artikel von $author auf der Homepage veröffentlicht:
+
+$short_message
+$url
+
+Der vollständige Artikel ist angehängt.
+
+
+-- 
+Viele Grüße,
+eure Homepage
+_MAILMSG_
+
+  tweet_message("$short_message\n$url");
+  maillist_message(
+    $short_message,
+    $full_message, [ {
+        Type     => 'text/html',
+        Encoding => 'base64',
+        Filename => sprintf(
+          'hannover-pm-%s%s.html',
+          ( $page->category->category_uri ? $page->category->category_uri . '-' : '' ),
+          $page->page_uri
+        ),
+        Data => sprintf(
+          '<html><head><title>%s</title></head><h1>Hannover.pm</h1><h2>%s</h2><body>%s</body></html>',
+          $short_message, $subject, $page->message->formatted,
+        ),
+      },
+    ],
+  );
 
   return redirect '/acp/page/list';
 }
@@ -1215,6 +1253,28 @@ sub tweet_message {
     error 'Twitter authorization required!';
     return 0;
   }
+}
+
+############################################################################
+sub maillist_message {
+  my ( $subject, $message, $attachments ) = @_;
+  $attachments ||= [];
+
+  my $msg = MIME::Lite->new(
+    From    => 'Hannover.pm <mail@hannover.pm>',
+    To      => 'Hannover.pm Mailinglist <hannover-pm@pm.org>',
+    Type    => 'multipart/mixed',
+    Subject => $subject,
+  );
+  $msg->attach(
+    Type     => 'text/plain',
+    Encoding => 'base64',
+    Data     => $message,
+  );
+  $msg->attach( %{$_}, Disposition => 'attachment' ) foreach @{$attachments};
+  debug $msg->as_string;
+
+  return 0;
 }
 
 ############################################################################
