@@ -10,35 +10,10 @@ Requirements
 
 A Perl version of 5.10 (5.010) or above is required to run App::DancePage.
 
-The following Perl modules are required:
+Run the following command to install all required dependencies. You need 
+to have [cpanm](http://p3rl.org/App::cpanminus) installed.
 
-* [Const::Fast](http://p3rl.org/Const::Fast)
-* [Dancer](http://p3rl.org/Dancer)
-* [Dancer::Template::Xslate](http://p3rl.org/Dancer::Template::Xslate)
-* [Dancer::Plugin::Auth::Extensible](http://p3rl.org/Dancer::Plugin::Auth::Extensible)
-* [Dancer::Plugin::Auth::Extensible::Provider::DBIC](http://p3rl.org/Dancer::Plugin::Auth::Extensible)
-* [Dancer::Plugin::Browser::Detect](http://p3rl.org/Dancer::Plugin::Browser::Detect)
-* [Dancer::Plugin::DBIC](http://p3rl.org/Dancer::Plugin::DBIC)
-* [DBIx::Class::Candy](http://p3rl.org/DBIx::Class::Candy)
-* [DBIx::Class::InflateColumn::DateTime](http://p3rl.org/DBIx::Class::InflateColumn::DateTime)
-* [DBIx::Class::EncodedColumn](http://p3rl.org/DBIx::Class::EncodedColumn)
-* [DBIx::Class::InflateColumn::Markup::Unified](http://p3rl.org/DBIx::Class::InflateColumn::Markup::Unified)
-* [DateTime](http://p3rl.org/DateTime)
-* [DateTime::Duration](http://p3rl.org/DateTime::Duration)
-* [DateTime::Format::SQLite](http://p3rl.org/DateTime::Format::SQLite)
-* [Text::Xslate::Bridge::MultiMarkdown](http://p3rl.org/Text::Xslate::Bridge::MultiMarkdown)
-* [YAML](http://p3rl.org/YAML)
-* [XML::Simple](http://p3rl.org/XML::Simple)
-* [GD](http://p3rl.org/GD)
-* [JavaScript::Value::Escape](http://p3rl.org/JavaScript::Value::Escape)
-* [Net::Twitter](http://p3rl.org/Net::Twitter)
-* [LWP::Protocol::https](http://p3rl.org/LWP::Protocol::https)
-* [Net::SSLeay](http://p3rl.org/Net::SSLeay)
-
-For testing purposes additionally:
-
-* [Test::More](http://p3rl.org/Test::More)
-* [Test::NoWarnings](http://p3rl.org/Test::NoWarnings)
+    dzil listdeps | cpanm
 
 The following software have to be installed:
 
