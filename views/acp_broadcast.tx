@@ -17,6 +17,7 @@
               <tr align="left" valign="top">
                 <th>Kanäle</th>
                 <td>
+                  <label style="display:block"><input type="checkbox" name="maillist" value="1" checked="checked" autocomplete="off"> Hannover.pm Mailingliste</label>
                   <label style="display:block"><input type="checkbox" name="twitter" value="1" checked="checked" autocomplete="off"> Twitter</label>
                 </td>
               </tr>
