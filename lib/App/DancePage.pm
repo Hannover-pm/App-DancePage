@@ -1034,6 +1034,15 @@ get q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&get_acp_b
 sub post_acp_broadcast_route {
   return redirect '/acp/broadcast'   if !params->{message};
   tweet_message( params->{message} ) if params->{twitter};
+  maillist_message(
+    'Neuer Broadcast von Hannover.pm',
+    sprintf( <<"_MAIL_MSG_", logged_in_user->username, params->{message} ) ) if params->{maillist};
+Hallo zusammen,
+
+%s hat soeben einen Broadcast über Hannover.pm verschickt:
+
+%s
+_MAIL_MSG_
   return redirect '/acp';
 }
 post q{/acp/broadcast} => require_any_role [qw( admin broadcast )] => \&post_acp_broadcast_route;
@@ -1272,8 +1281,7 @@ sub maillist_message {
     Data     => $message,
   );
   $msg->attach( %{$_}, Disposition => 'attachment' ) foreach @{$attachments};
-  debug $msg->as_string;
-
+  eval { $msg->send(); 1; } and return 1;
   return 0;
 }
 
