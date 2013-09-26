@@ -6,11 +6,26 @@
           <p itemprop="articleBody">
             Dies ist die Homepage der Anwendergruppe von Perl aus Hannover,
             Deutschland. Anwendergruppen für Perl, auch Perl User Groups,
-            werden "Perl Mongers" genannt. Wenn Sie uns noch nicht kennen,
-            möchten Sie eventuell etwas
+            werden "Perl Mongers" genannt. Wenn du uns noch nicht kennst,
+            möchtest du eventuell etwas
             <a href="/ueber-uns">über Hannover.pm und die Perl Mongers</a>
             erfahren.
           </p>
+          <footer>
+            <meta itemprop="dateCreated" content="2013-08-31T17:29:00+0200">
+          </footer>
+        </article>
+        <article itemscope="itemscope" itemtype="http://schema.org/Article">
+          <header>
+            <h2 id="pagesubject" itemprop="name">Hannover.pm organisiert den 16. Deutschen Perl-Workshop</h2>
+          </header>
+          <p itemprop="articleBody">
+            Der <abbr title="German Perl Worksop 2014">GPW 2014</abbr> wird
+            in Hannover ausgetragen und von uns auch organisiert. Weitere
+            Informationen über den
+            <a href="http://act.yapc.eu/gpw2014/">Perl Worksop 2014 in Hannover auf der offiziellen Homepage</a>.
+          </p>
+          <p style="font-size: 1em; color: blue;"><strong>Countdown:</strong> Nur noch <img style="vertical-align: bottom" src="http://hannover.pm/gpw2014/counter-de.png"></p>
           <footer>
             <meta itemprop="dateCreated" content="2013-08-31T17:29:00+0200">
           </footer>
