@@ -15,7 +15,7 @@ to have [cpanm](http://p3rl.org/App::cpanminus) installed.
 
     dzil listdeps | cpanm
 
-The following software have to be installed:
+The following software has to be installed:
 
 * [OpenSSL](http://www.openssl.org/)
 
@@ -31,7 +31,8 @@ There are currently 3 checks to prevent session stealing and CSRF:
 Automated testing
 -----------------
 
-This repository have automated testing enabled for the master branch. The test reports are available at:
+This repository has automated testing enabled for the master branch. The
+test reports are available at:
 
 http://ci.dev5media.de/job/Hannover.pm%20Website/
 
